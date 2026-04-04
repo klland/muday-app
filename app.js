@@ -841,18 +841,12 @@ document.getElementById('sendGroupBtn').addEventListener('click', async () => {
   groupModal.classList.remove('open');
   document.body.style.overflow = '';
 
-  // 傳送到 LINE
+  // 傳送到 LINE（用 URL scheme，不會附加 LIFF URL）
+  const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
   if (liff.isInClient()) {
-    // 在 LINE 內：直接傳到當前聊天室
-    try {
-      await liff.sendMessages([{ type: 'text', text }]);
-      showToast('✅ 已傳送匯總到 LINE！');
-    } catch(e) {
-      showToast('⚠️ 傳送失敗：' + e.message, 'error');
-    }
+    liff.openWindow({ url: lineUrl, external: false });
   } else {
-    // 瀏覽器：跳轉到 LINE app，文字已填好
-    window.location.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
+    window.location.href = lineUrl;
   }
 });
 

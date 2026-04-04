@@ -62,7 +62,6 @@ const MENU = [
       { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 340, caffeine: 3 },
       { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 345, caffeine: 2 },
       { id: 309, name: '高山青奶茶',   emoji: '🏔️', price: 55, kcal: 345, caffeine: 2 },
-      { id: 310, name: '椒麻奶茶',     emoji: '🌶️', price: 70, kcal: 385, caffeine: 2, hotOnly: true, hasPeppercorn: true },
       { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65, kcal: 365, caffeine: 2 },
     ]
   },
@@ -86,7 +85,6 @@ const MENU = [
       { id: 504, name: '烏龍鮮奶茶',     emoji: '🫖', price: 75, kcal: 438, caffeine: 2 },
       { id: 505, name: '島韻紅鮮奶茶',   emoji: '🍂', price: 75, kcal: 440, caffeine: 3 },
       { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85, kcal: 500, caffeine: 2 },
-      { id: 507, name: '椒麻鮮奶茶',     emoji: '🌶️', price: 90, kcal: 490, caffeine: 2, hotOnly: true, hasPeppercorn: true },
       { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, kcal: 510, caffeine: 1, limitedSugar: true, traceCaffeine: true },
       { id: 509, name: '高山青鮮奶茶',   emoji: '🏔️', price: 75, kcal: 440, caffeine: 2 },
     ]

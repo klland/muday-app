@@ -19,86 +19,87 @@ const db = firebase.database();
 const LIFF_ID = '2009621528-uT75vRTv';
 
 // ===== 菜單資料 =====
+// kcal: 大杯正常甜估算值  caffeine: 0=無 1=微量(<100mg) 2=中(101-200mg) 3=高(>200mg)
 const MENU = [
   {
-    series: '茶人系列', category: '原味茶', emoji_cat: '🌿',
+    series: '茶人系列', category: '原味茶', emoji_cat: '🌿', theme: 'green',
     items: [
-      { id: 101, name: '輕香烏龍綠',  emoji: '🌿', price: 45 },
-      { id: 102, name: '糯米香茶',    emoji: '🌾', price: 45 },
-      { id: 103, name: '島韻紅茶',    emoji: '🍂', price: 40 },
-      { id: 104, name: '炭培烏龍',    emoji: '🫖', price: 40 },
-      { id: 105, name: '油切蕎麥茶',  emoji: '🌰', price: 40, traceCaffeine: true, canCustomNoCaff: true, recommendNoSugar: true },
-      { id: 106, name: '手採高山青',  emoji: '🏔️', price: 40 },
+      { id: 101, name: '輕香烏龍綠',  emoji: '🌿', price: 45, kcal: 175, caffeine: 2 },
+      { id: 102, name: '糯米香茶',    emoji: '🍶', price: 45, kcal: 170, caffeine: 2 },
+      { id: 103, name: '島韻紅茶',    emoji: '🍂', price: 40, kcal: 160, caffeine: 3 },
+      { id: 104, name: '炭培烏龍',    emoji: '🫖', price: 40, kcal: 165, caffeine: 2 },
+      { id: 105, name: '油切蕎麥茶',  emoji: '🌾', price: 40, kcal: 155, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true, recommendNoSugar: true },
+      { id: 106, name: '手採高山青',  emoji: '🏔️', price: 40, kcal: 168, caffeine: 2 },
     ]
   },
   {
-    series: '講究系列', category: '風味茶', emoji_cat: '🌸',
+    series: '講究系列', category: '風味茶', emoji_cat: '🌸', theme: 'pink',
     items: [
-      { id: 201, name: '牡丹高山青',    emoji: '🌸', price: 60, limitedSugar: true },
-      { id: 202, name: '牡丹蕎麥茶',    emoji: '🌸', price: 60, limitedSugar: true, caffeineFree: true },
-      { id: 203, name: '粉粿牡丹檸檬',  emoji: '🍋', price: 70, limitedSugar: true, traceCaffeine: true },
-      { id: 204, name: '酸梅湯烏龍綠',  emoji: '🫐', price: 65, fixedSweetIce: true },
-      { id: 205, name: '輕檸烏龍綠',    emoji: '🍋', price: 65 },
-      { id: 206, name: '糯香檸檬茶',    emoji: '🍋', price: 65 },
-      { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼', price: 70, limitedSugar: true, traceCaffeine: true },
-      { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎', price: 70, limitedSugar: true, traceCaffeine: true },
-      { id: 209, name: '荔枝烏龍',      emoji: '🍈', price: 60 },
-      { id: 210, name: '荔枝蘆薈',      emoji: '🍈', price: 65, fixedSweetIce: true },
-      { id: 211, name: '檸檬紅茶',      emoji: '🍋', price: 60 },
-      { id: 212, name: '檸檬高山青',    emoji: '🍋', price: 60 },
-      { id: 213, name: '桂花蕎麥茶',    emoji: '🌼', price: 60, limitedSugar: true, caffeineFree: true },
+      { id: 201, name: '牡丹高山青',    emoji: '🌸🏔️', price: 60, kcal: 200, caffeine: 2, limitedSugar: true },
+      { id: 202, name: '牡丹蕎麥茶',    emoji: '🌸🌾', price: 60, kcal: 195, caffeine: 0, limitedSugar: true, caffeineFree: true },
+      { id: 203, name: '粉粿牡丹檸檬',  emoji: '🌸🍋', price: 70, kcal: 265, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 204, name: '酸梅湯烏龍綠',  emoji: '🍑🌿', price: 65, kcal: 350, caffeine: 2, fixedSweetIce: true },
+      { id: 205, name: '輕檸烏龍綠',    emoji: '🍋🌿', price: 65, kcal: 255, caffeine: 2 },
+      { id: 206, name: '糯香檸檬茶',    emoji: '🍋🍶', price: 65, kcal: 260, caffeine: 2 },
+      { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼🍋', price: 70, kcal: 268, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎🍋', price: 70, kcal: 275, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 209, name: '荔枝烏龍',      emoji: '🍒🫖', price: 60, kcal: 235, caffeine: 2 },
+      { id: 210, name: '荔枝蘆薈',      emoji: '🍒', price: 65, kcal: 248, caffeine: 2, fixedSweetIce: true },
+      { id: 211, name: '檸檬紅茶',      emoji: '🍋🍂', price: 60, kcal: 240, caffeine: 3 },
+      { id: 212, name: '檸檬高山青',    emoji: '🍋🏔️', price: 60, kcal: 238, caffeine: 2 },
+      { id: 213, name: '桂花蕎麥茶',    emoji: '🌼🌾', price: 60, kcal: 225, caffeine: 0, limitedSugar: true, caffeineFree: true },
     ]
   },
   {
-    series: '香醇系列', category: '奶茶', emoji_cat: '🧋',
+    series: '香醇系列', category: '奶茶', emoji_cat: '🧋', theme: 'brown',
     items: [
-      { id: 301, name: '烏龍綠奶茶',   emoji: '🧋', price: 60 },
-      { id: 302, name: '糯香奶茶',     emoji: '🧋', price: 60 },
-      { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, limitedSugar: true, traceCaffeine: true },
-      { id: 304, name: '黃金蕎麥奶茶', emoji: '✨', price: 55, caffeineFree: true },
-      { id: 305, name: '逮丸奶茶',     emoji: '🟤', price: 75 },
-      { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70 },
-      { id: 307, name: '島韻紅奶茶',   emoji: '🧋', price: 55 },
-      { id: 308, name: '烏龍奶茶',     emoji: '🧋', price: 55 },
-      { id: 309, name: '高山青奶茶',   emoji: '🧋', price: 55 },
-      { id: 310, name: '椒麻奶茶',     emoji: '🌶️', price: 70, hotOnly: true, hasPeppercorn: true },
-      { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65 },
+      { id: 301, name: '烏龍綠奶茶',   emoji: '🌿', price: 60, kcal: 360, caffeine: 2 },
+      { id: 302, name: '糯香奶茶',     emoji: '🍶', price: 60, kcal: 355, caffeine: 2 },
+      { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, kcal: 420, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 304, name: '黃金蕎麥奶茶', emoji: '🌾', price: 55, kcal: 340, caffeine: 0, caffeineFree: true },
+      { id: 305, name: '逮丸奶茶',     emoji: '🟤', price: 75, kcal: 490, caffeine: 2, includesGrass: true },
+      { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70, kcal: 430, caffeine: 2 },
+      { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 340, caffeine: 3 },
+      { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 345, caffeine: 2 },
+      { id: 309, name: '高山青奶茶',   emoji: '🏔️', price: 55, kcal: 345, caffeine: 2 },
+      { id: 310, name: '椒麻奶茶',     emoji: '🌶️', price: 70, kcal: 385, caffeine: 2, hotOnly: true, hasPeppercorn: true },
+      { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65, kcal: 365, caffeine: 2 },
     ]
   },
   {
-    series: '濃韻系列', category: '芝士奶蓋', emoji_cat: '🫙',
+    series: '濃韻系列', category: '芝士奶蓋', emoji_cat: '🫙', theme: 'gold',
     items: [
-      { id: 401, name: '奶蓋烏龍綠', emoji: '🫙', price: 75 },
-      { id: 402, name: '奶蓋糯香茶', emoji: '🫙', price: 75 },
-      { id: 403, name: '奶蓋島韻紅', emoji: '🫙', price: 70 },
-      { id: 404, name: '奶蓋烏龍茶', emoji: '🫙', price: 70 },
-      { id: 405, name: '奶蓋蕎麥茶', emoji: '🫙', price: 70, traceCaffeine: true, canCustomNoCaff: true },
-      { id: 406, name: '奶蓋高山青', emoji: '🫙', price: 70 },
+      { id: 401, name: '奶蓋烏龍綠', emoji: '🌿', price: 75, kcal: 430, caffeine: 2 },
+      { id: 402, name: '奶蓋糯香茶', emoji: '🍶', price: 75, kcal: 428, caffeine: 2 },
+      { id: 403, name: '奶蓋島韻紅', emoji: '🍂', price: 70, kcal: 420, caffeine: 3 },
+      { id: 404, name: '奶蓋烏龍茶', emoji: '🫖', price: 70, kcal: 422, caffeine: 2 },
+      { id: 405, name: '奶蓋蕎麥茶', emoji: '🌾', price: 70, kcal: 415, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true },
+      { id: 406, name: '奶蓋高山青', emoji: '🏔️', price: 70, kcal: 422, caffeine: 2 },
     ]
   },
   {
-    series: '自然系列', category: '鮮奶茶', emoji_cat: '🥛',
+    series: '自然系列', category: '鮮奶茶', emoji_cat: '🥛', theme: 'blue',
     items: [
-      { id: 501, name: '烏龍綠鮮奶茶',   emoji: '🥛', price: 80 },
-      { id: 502, name: '糯香鮮奶茶',     emoji: '🥛', price: 80 },
-      { id: 503, name: '蕎麥鮮奶茶',     emoji: '🥛', price: 75, caffeineFree: true },
-      { id: 504, name: '烏龍鮮奶茶',     emoji: '🥛', price: 75 },
-      { id: 505, name: '島韻紅鮮奶茶',   emoji: '🥛', price: 75 },
-      { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85 },
-      { id: 507, name: '椒麻鮮奶茶',     emoji: '🌶️', price: 90, hotOnly: true, hasPeppercorn: true },
-      { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, limitedSugar: true, traceCaffeine: true },
-      { id: 509, name: '高山青鮮奶茶',   emoji: '🥛', price: 75 },
+      { id: 501, name: '烏龍綠鮮奶茶',   emoji: '🌿', price: 80, kcal: 445, caffeine: 2 },
+      { id: 502, name: '糯香鮮奶茶',     emoji: '🍶', price: 80, kcal: 442, caffeine: 2 },
+      { id: 503, name: '蕎麥鮮奶茶',     emoji: '🌾', price: 75, kcal: 435, caffeine: 0, caffeineFree: true },
+      { id: 504, name: '烏龍鮮奶茶',     emoji: '🫖', price: 75, kcal: 438, caffeine: 2 },
+      { id: 505, name: '島韻紅鮮奶茶',   emoji: '🍂', price: 75, kcal: 440, caffeine: 3 },
+      { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85, kcal: 500, caffeine: 2 },
+      { id: 507, name: '椒麻鮮奶茶',     emoji: '🌶️', price: 90, kcal: 490, caffeine: 2, hotOnly: true, hasPeppercorn: true },
+      { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, kcal: 510, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 509, name: '高山青鮮奶茶',   emoji: '🏔️', price: 75, kcal: 440, caffeine: 2 },
     ]
   },
   {
-    series: '堅持系列', category: '冬瓜茶', emoji_cat: '🍵',
+    series: '堅持系列', category: '冬瓜茶', emoji_cat: '🍵', theme: 'teal',
     items: [
-      { id: 601, name: '冬瓜紅茶',   emoji: '🍵', price: 50 },
-      { id: 602, name: '冬瓜青茶',   emoji: '🍵', price: 50 },
-      { id: 603, name: '冬瓜檸檬',   emoji: '🍋', price: 55 },
-      { id: 604, name: '冬瓜仙草蜜', emoji: '🌿', price: 55, fixedIce: true },
-      { id: 605, name: '冬瓜蕎麥茶', emoji: '🌰', price: 50, caffeineFree: true },
-      { id: 606, name: '冬瓜烏龍茶', emoji: '🍵', price: 50 },
+      { id: 601, name: '冬瓜紅茶',   emoji: '🍂', price: 50, kcal: 350, caffeine: 3 },
+      { id: 602, name: '冬瓜青茶',   emoji: '🏔️', price: 50, kcal: 345, caffeine: 2 },
+      { id: 603, name: '冬瓜檸檬',   emoji: '🍋', price: 55, kcal: 368, caffeine: 2 },
+      { id: 604, name: '冬瓜仙草蜜', emoji: '🍯', price: 55, kcal: 380, caffeine: 2, fixedIce: true },
+      { id: 605, name: '冬瓜蕎麥茶', emoji: '🌾', price: 50, kcal: 338, caffeine: 0, caffeineFree: true },
+      { id: 606, name: '冬瓜烏龍茶', emoji: '🫖', price: 50, kcal: 348, caffeine: 2 },
     ]
   },
 ];
@@ -138,16 +139,7 @@ function saveCart() {
   localStorage.setItem(LS_CART, JSON.stringify(cart));
 }
 
-function getHistory() {
-  const raw = JSON.parse(localStorage.getItem(LS_HISTORY) || '[]');
-  const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  return raw.filter(h => h.timestamp > cutoff);
-}
-function saveToHistory(name, items, total) {
-  const history = getHistory();
-  history.unshift({ timestamp: Date.now(), name, items: [...items], total });
-  localStorage.setItem(LS_HISTORY, JSON.stringify(history.slice(0, 50)));
-}
+// 歷史訂單（Firebase 同步版）
 
 // ===== Firebase =====
 function getTodayKey() {
@@ -165,14 +157,32 @@ function toArr(val) {
 async function loadTodayOrders() {
   const snap = await db.ref(`orders/${getTodayKey()}`).get();
   if (!snap.exists()) return [];
-  return toArr(snap.val()).map(order => ({
+  const val = snap.val();
+  // 保留 Firebase key，方便後續刪除
+  return Object.entries(val).map(([fbKey, order]) => ({
     ...order,
-    items: toArr(order.items).map(item => ({
+    _fbKey: fbKey,
+    items: toArr(order.items).map((item, idx) => ({
       ...item,
+      _itemIdx: idx,
       opts:     toArr(item.opts),
       toppings: toArr(item.toppings),
     }))
   })).sort((a, b) => a.timestamp - b.timestamp);
+}
+
+// ===== Toast 通知 =====
+function showToast(msg, type = 'success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 400);
+  }, 2800);
 }
 
 // ===== State =====
@@ -259,6 +269,7 @@ function createCatBtn(label, value, active) {
 
 function itemTags(item) {
   const t = [];
+  if (item.includesGrass)   t.push({ text: '含草仔粿',      cls: 'tag-green'  });
   if (item.caffeineFree)    t.push({ text: '無咖啡因',      cls: 'tag-green'  });
   if (item.traceCaffeine)   t.push({ text: '微量咖啡因',    cls: 'tag-yellow' });
   if (item.canCustomNoCaff) t.push({ text: '可客製無咖啡因', cls: 'tag-blue'   });
@@ -270,11 +281,15 @@ function itemTags(item) {
   return t;
 }
 
+const CAFFEINE_LABELS = ['無咖', '微咖', '中咖', '高咖'];
+const CAFFEINE_COLORS = ['caff-none', 'caff-low', 'caff-mid', 'caff-high'];
+
 function createDrinkCard(item) {
   const tags = itemTags(item);
   const isFav = getFavorites().has(item.id);
   const card = document.createElement('div');
-  card.className = 'drink-card';
+  card.className = `drink-card theme-${item.theme || 'green'}`;
+  const caffeineIdx = item.caffeine ?? 2;
   card.innerHTML = `
     <div class="drink-img">
       <span class="drink-emoji">${item.emoji}</span>
@@ -283,6 +298,10 @@ function createDrinkCard(item) {
     <div class="drink-info">
       <div class="drink-name">${item.name}</div>
       ${tags.length ? `<div class="drink-tags">${tags.map(t => `<span class="tag ${t.cls}">${t.text}</span>`).join('')}</div>` : ''}
+      <div class="drink-meta">
+        <span class="meta-kcal">🔥 ${item.kcal ?? '—'} kcal</span>
+        <span class="meta-caff ${CAFFEINE_COLORS[caffeineIdx]}">☕ ${CAFFEINE_LABELS[caffeineIdx]}</span>
+      </div>
       <div class="drink-footer">
         <span class="drink-price">$${item.price}</span>
         <span class="add-icon">＋</span>
@@ -313,6 +332,20 @@ function openModal(item) {
   const sugarGroup = document.getElementById('sugarGroup');
   const iceGroup   = document.getElementById('iceGroup');
   const ppGroup    = document.getElementById('peppercornGroup');
+
+  // 草仔粿備注
+  let grassNote = document.getElementById('grassNote');
+  if (!grassNote) {
+    grassNote = document.createElement('div');
+    grassNote.id = 'grassNote';
+    grassNote.className = 'fixed-note';
+    grassNote.style.background = '#e8f5e9';
+    grassNote.style.borderColor = '#a5d6a7';
+    grassNote.style.color = '#2d8a5a';
+    grassNote.textContent = '🌿 本品已含招牌草仔粿';
+    fixedNote.parentNode.insertBefore(grassNote, fixedNote);
+  }
+  grassNote.style.display = item.includesGrass ? 'block' : 'none';
 
   if (item.fixedSweetIce) {
     fixedNote.style.display  = 'block';
@@ -455,22 +488,40 @@ function closeCartPanel() {
 function updateCartBadge() {
   const n = cart.reduce((s, i) => s + i.qty, 0);
   cartBadge.textContent = n;
-  cartBadge.style.transform = 'scale(1.3)';
-  setTimeout(() => { cartBadge.style.transform = ''; }, 200);
+  cartBadge.classList.remove('bounce');
+  void cartBadge.offsetWidth; // reflow
+  cartBadge.classList.add('bounce');
 }
 
-function renderCart() {
+async function fetchHistory() {
+  try {
+    const snap = await db.ref('history').get();
+    if (!snap.exists()) return [];
+    return Object.values(snap.val())
+      .map(entry => ({
+        ...entry,
+        items: toArr(entry.items).map(item => ({
+          ...item,
+          opts:     toArr(item.opts),
+          toppings: toArr(item.toppings),
+        }))
+      }))
+      .sort((a, b) => b.timestamp - a.timestamp);
+  } catch(e) { return []; }
+}
+
+async function renderCart() {
   if (cart.length === 0) {
-    const history = getHistory();
+    const history = await fetchHistory();
     let html = '<p class="cart-empty">購物車是空的</p>';
     if (history.length > 0) {
       html += '<button class="reorder-btn" id="reorderBtn">🔄 重點上次訂單</button>';
     }
     cartBody.innerHTML = html;
     if (history.length > 0) {
-      document.getElementById('reorderBtn').addEventListener('click', () => {
-        reorderLast();
-        renderCart();
+      document.getElementById('reorderBtn').addEventListener('click', async () => {
+        await reorderLast();
+        await renderCart();
       });
     }
     cartFooter.style.display = 'none';
@@ -505,8 +556,8 @@ function renderCart() {
   cartFooter.style.display = 'block';
 }
 
-function reorderLast() {
-  const history = getHistory();
+async function reorderLast() {
+  const history = await fetchHistory();
   if (history.length === 0) return;
   cart = history[0].items.map(item => ({ ...item, id: Date.now() + Math.random() }));
   saveCart();
@@ -540,14 +591,15 @@ checkoutBtn.addEventListener('click', async () => {
     : (nameInput.value.trim() || '匿名');
 
   const total = cart.reduce((s, i) => s + i.totalPrice, 0);
+  const cartSnapshot = [...cart];
 
-  // 儲存歷史紀錄
-  saveToHistory(name, cart, total);
+  // 上傳到 Firebase 團購（歷史紀錄改在匯總送出時才存）
+  try { await submitToFirebase(name, cartSnapshot, total); } catch(e) { console.warn('Firebase:', e); }
 
-  // 上傳到 Firebase 團購
-  try { await submitToFirebase(name, [...cart], total); } catch(e) { console.warn('Firebase:', e); }
-
-  document.getElementById('successName').textContent = name;
+  document.getElementById('successName').textContent = `${name} 的訂單`;
+  document.getElementById('successItems').innerHTML = cartSnapshot
+    .map(i => `<div class="success-item"><span>${i.emoji} ${i.name} × ${i.qty}</span><span>$${i.totalPrice}</span></div>`)
+    .join('');
 
   cart = [];
   saveCart();
@@ -561,11 +613,75 @@ closeSuccess.addEventListener('click', () => successModal.classList.remove('open
 successModal.addEventListener('click', e => { if (e.target === successModal) successModal.classList.remove('open'); });
 
 // ===== 歷史訂單 =====
-historyBtn.addEventListener('click', () => {
-  renderHistory();
+let historyCache = [];
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+historyBtn.addEventListener('click', async () => {
   historyModal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  const body = document.getElementById('historyBody');
+  body.innerHTML = `<div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+    ${[1,2,3].map(()=>`<div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>`).join('')}
+  </div>`;
+
+  try {
+    const snap = await db.ref('history').get();
+    if (!snap.exists()) {
+      body.innerHTML = '<p class="empty-hint">還沒有歷史訂單</p>';
+      return;
+    }
+    // 和 loadTodayOrders 一樣：把 Firebase object 全部轉回 array
+    historyCache = Object.values(snap.val())
+      .map(entry => ({
+        ...entry,
+        items: toArr(entry.items).map(item => ({
+          ...item,
+          opts:     toArr(item.opts),
+          toppings: toArr(item.toppings),
+        }))
+      }))
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 50);
+
+    body.innerHTML = '';
+    historyCache.forEach((order, idx) => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      const itemsHtml = order.items.map(i => `
+        <div class="history-drink">${i.emoji || ''} ${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
+        <div class="history-opts">${[...toArr(i.opts), ...(toArr(i.toppings).length ? ['加：'+toArr(i.toppings).join('、')] : [])].join(' · ')}</div>
+      `).join('');
+      div.innerHTML = `
+        <div class="history-header">
+          <span class="history-date">${order.name}・${formatDate(order.timestamp)}</span>
+          <span class="history-total">合計 $${order.total}</span>
+        </div>
+        <div>${itemsHtml}</div>
+        <button class="reorder-btn history-reorder" data-idx="${idx}">🔄 重點此筆訂單</button>
+      `;
+      body.appendChild(div);
+    });
+
+    body.querySelectorAll('.history-reorder').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const order = historyCache[Number(btn.dataset.idx)];
+        cart = order.items.map(item => ({ ...item, id: Date.now() + Math.random() }));
+        saveCart();
+        updateCartBadge();
+        historyModal.classList.remove('open');
+        document.body.style.overflow = '';
+        openCart();
+      });
+    });
+  } catch(e) {
+    body.innerHTML = `<p style="text-align:center;color:#c0392b;padding:30px">載入失敗：${e.message}</p>`;
+  }
 });
+
 document.getElementById('closeHistory').addEventListener('click', () => {
   historyModal.classList.remove('open');
   document.body.style.overflow = '';
@@ -574,62 +690,24 @@ historyModal.addEventListener('click', e => {
   if (e.target === historyModal) { historyModal.classList.remove('open'); document.body.style.overflow = ''; }
 });
 
-function formatDate(ts) {
-  const d = new Date(ts);
-  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-
-function renderHistory() {
-  const body = document.getElementById('historyBody');
-  const history = getHistory();
-  if (history.length === 0) {
-    body.innerHTML = '<p class="empty-hint">還沒有歷史訂單</p>';
-    return;
-  }
-  body.innerHTML = '';
-  history.forEach((order, idx) => {
-    const div = document.createElement('div');
-    div.className = 'history-item';
-    const itemsHtml = order.items.map(i => `
-      <div class="history-drink">${i.emoji} ${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
-      <div class="history-opts">${[...i.opts, ...(i.toppings.length ? ['加：'+i.toppings.join('、')] : [])].join(' · ')}</div>
-    `).join('');
-    div.innerHTML = `
-      <div class="history-header">
-        <span class="history-date">${formatDate(order.timestamp)}</span>
-        <span class="history-total">合計 $${order.total}</span>
-      </div>
-      <div>${itemsHtml}</div>
-      <button class="reorder-btn history-reorder" data-idx="${idx}">🔄 重點此筆訂單</button>
-    `;
-    body.appendChild(div);
-  });
-  body.querySelectorAll('.history-reorder').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const order = history[Number(btn.dataset.idx)];
-      cart = order.items.map(item => ({ ...item, id: Date.now() + Math.random() }));
-      saveCart();
-      updateCartBadge();
-      historyModal.classList.remove('open');
-      document.body.style.overflow = '';
-      openCart();
-    });
-  });
-}
-
 // ===== 今日團購 =====
+let groupOrders = [];
+
 groupBtn.addEventListener('click', async () => {
   groupModal.classList.add('open');
   document.body.style.overflow = 'hidden';
   const body = document.getElementById('groupBody');
-  body.innerHTML = '<p style="text-align:center;color:#888;padding:30px">載入中...</p>';
+  body.innerHTML = `<div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+    ${[1,2,3].map(()=>`<div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>`).join('')}
+  </div>`;
   try {
-    const orders = await loadTodayOrders();
-    renderGroupOrders(orders);
+    groupOrders = await loadTodayOrders();
+    renderGroupOrders();
   } catch(e) {
     body.innerHTML = `<p style="text-align:center;color:#c0392b;padding:30px">載入失敗：${e.message}</p>`;
   }
 });
+
 document.getElementById('closeGroup').addEventListener('click', () => {
   groupModal.classList.remove('open');
   document.body.style.overflow = '';
@@ -638,72 +716,143 @@ groupModal.addEventListener('click', e => {
   if (e.target === groupModal) { groupModal.classList.remove('open'); document.body.style.overflow = ''; }
 });
 
-function renderGroupOrders(orders) {
-  const body = document.getElementById('groupBody');
+function renderGroupOrders() {
+  const body    = document.getElementById('groupBody');
   const sendBtn = document.getElementById('sendGroupBtn');
-  if (orders.length === 0) {
+
+  // 過濾掉沒有品項的訂單
+  const activeOrders = groupOrders.filter(o => o.items.length > 0);
+
+  if (activeOrders.length === 0) {
     body.innerHTML = '<p class="empty-hint">今天還沒有人點餐</p>';
     sendBtn.style.display = 'none';
     return;
   }
+
   sendBtn.style.display = '';
-  const totalCups  = orders.reduce((s, o) => s + o.items.reduce((ss, i) => ss + i.qty, 0), 0);
-  const totalPrice = orders.reduce((s, o) => s + o.total, 0);
+  let totalCups = 0, totalPrice = 0;
+
   let html = '';
-  orders.forEach(order => {
+  activeOrders.forEach(order => {
     html += `<div class="group-person"><div class="group-person-name">【${order.name}】</div>`;
     order.items.forEach(item => {
+      totalCups  += item.qty;
+      totalPrice += item.totalPrice;
       const detail = [...item.opts, ...(item.toppings.length ? ['加：'+item.toppings.join('、')] : [])].join('・');
-      html += `<div class="history-drink">${item.emoji} ${item.name} × ${item.qty}<span>$${item.totalPrice}</span></div>`;
-      html += `<div class="history-opts">${detail}</div>`;
+      html += `
+        <div class="group-item">
+          <div class="group-item-info">
+            <div class="group-item-name">${item.emoji} ${item.name} × ${item.qty}</div>
+            <div class="group-item-opts">${detail}</div>
+          </div>
+          <span class="group-item-price">$${item.totalPrice}</span>
+          <button class="group-del-btn" data-fbkey="${order._fbKey}" data-idx="${item._itemIdx}">✕</button>
+        </div>`;
     });
     html += `</div>`;
   });
-  html += `<div class="group-summary">共 ${orders.length} 人・${totalCups} 杯・合計 $${totalPrice}</div>`;
+
+  html += `<div class="group-summary">共 ${activeOrders.length} 人・${totalCups} 杯・合計 $${totalPrice}</div>`;
   body.innerHTML = html;
+
+  // 刪除按鈕：真正從 Firebase 刪除
+  body.querySelectorAll('.group-del-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const fbKey   = btn.dataset.fbkey;
+      const itemIdx = Number(btn.dataset.idx);
+
+      // 找到對應的 order 並移除該品項
+      const order = groupOrders.find(o => o._fbKey === fbKey);
+      if (!order) return;
+
+      order.items = order.items.filter(i => i._itemIdx !== itemIdx);
+
+      // 更新 Firebase
+      try {
+        if (order.items.length === 0) {
+          // 整筆訂單刪除
+          await db.ref(`orders/${getTodayKey()}/${fbKey}`).remove();
+          groupOrders = groupOrders.filter(o => o._fbKey !== fbKey);
+        } else {
+          // 更新剩餘品項
+          const cleanItems = order.items.map(({ _itemIdx, ...rest }) => rest);
+          const newTotal   = order.items.reduce((s, i) => s + i.totalPrice, 0);
+          await db.ref(`orders/${getTodayKey()}/${fbKey}`).update({ items: cleanItems, total: newTotal });
+          order.total = newTotal;
+        }
+      } catch(e) {
+        console.warn('刪除失敗:', e);
+      }
+
+      renderGroupOrders();
+    });
+  });
 }
 
-function buildGroupText(orders) {
-  const d = new Date();
+function buildGroupText() {
+  const activeOrders = groupOrders.filter(o => o.items.length > 0);
+  const d       = new Date();
   const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
-  const lines = [`👥 一沐日｜${dateStr} 團購匯總`, `─────────────`];
-  orders.forEach(order => {
+  const lines   = [`👥 一沐日｜${dateStr} 團購匯總`, `─────────────`];
+
+  activeOrders.forEach(order => {
     lines.push(`【${order.name}】`);
     order.items.forEach((item, idx) => {
       const detail = [...item.opts, ...(item.toppings.length ? ['加：'+item.toppings.join('、')] : [])].join('・');
       lines.push(`${idx+1}. ${item.name} × ${item.qty}　$${item.totalPrice}`);
-      lines.push(`   ${detail}`);
+      if (detail) lines.push(`   ${detail}`);
     });
   });
+
   lines.push(`─────────────`);
-  const totalCups  = orders.reduce((s, o) => s + o.items.reduce((ss, i) => ss + i.qty, 0), 0);
-  const totalPrice = orders.reduce((s, o) => s + o.total, 0);
-  lines.push(`共 ${orders.length} 人・${totalCups} 杯・合計 $${totalPrice}`);
+  let totalCups = 0, totalPrice = 0;
+  activeOrders.forEach(order => {
+    order.items.forEach(item => {
+      totalCups  += item.qty;
+      totalPrice += item.totalPrice;
+    });
+  });
+  lines.push(`共 ${totalCups} 杯・合計 $${totalPrice}`);
   return lines.join('\n');
 }
 
+
 document.getElementById('sendGroupBtn').addEventListener('click', async () => {
+  const activeOrders = groupOrders.filter(o => o.items.length > 0);
+  if (activeOrders.length === 0) return;
+  const text = buildGroupText();
+
+  // Firebase 操作
+  const totalPrice = activeOrders.reduce((s, o) => s + o.total, 0);
+  const allItems   = activeOrders.flatMap(o => o.items.map(({ _itemIdx, ...rest }) => rest));
   try {
-    const orders = await loadTodayOrders();
-    if (orders.length === 0) return;
-    const text = buildGroupText(orders);
-    // 清空今日 Firebase 資料
-    await db.ref(`orders/${getTodayKey()}`).remove();
-    if (isInLiff) {
-      try {
-        await liff.sendMessages([{ type: 'text', text }]);
-      } catch(e) {
-        navigator.clipboard.writeText(text).catch(() => {});
-        alert('已複製匯總，請貼到 LINE 群組');
-      }
-    } else {
-      navigator.clipboard.writeText(text).catch(() => {});
-      alert('已複製匯總，請貼到 LINE 群組');
+    await db.ref('history').push({
+      timestamp: Date.now(),
+      name: '團購匯總',
+      items: allItems,
+      total: totalPrice,
+      text: text,
+      people: activeOrders.map(o => o.name),
+    });
+  } catch(e) { showToast('⚠️ 歷史儲存失敗：' + e.message, 'error'); }
+  try { await db.ref(`orders/${getTodayKey()}`).remove(); } catch(e) {}
+
+  groupOrders = [];
+  groupModal.classList.remove('open');
+  document.body.style.overflow = '';
+
+  // 傳送到 LINE
+  if (liff.isInClient()) {
+    // 在 LINE 內：直接傳到當前聊天室
+    try {
+      await liff.sendMessages([{ type: 'text', text }]);
+      showToast('✅ 已傳送匯總到 LINE！');
+    } catch(e) {
+      showToast('⚠️ 傳送失敗：' + e.message, 'error');
     }
-    groupModal.classList.remove('open');
-    document.body.style.overflow = '';
-  } catch(e) {
-    alert('載入失敗，請重試');
+  } else {
+    // 瀏覽器：跳轉到 LINE app，文字已填好
+    window.location.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
   }
 });
 

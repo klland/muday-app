@@ -14,6 +14,11 @@ firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.database();
 
 // ============================================================
+// 群組隔離：從 URL 讀取 ?group=xxx，預設 'default'
+// ============================================================
+const GROUP_ID = new URLSearchParams(window.location.search).get('group') || 'default';
+
+// ============================================================
 // LIFF ID
 // ============================================================
 const LIFF_ID = '2009621528-uT75vRTv';
@@ -145,15 +150,15 @@ function getTodayKey() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 async function submitToFirebase(name, items, total) {
-  const key = db.ref(`orders/${getTodayKey()}`).push().key;
-  await db.ref(`orders/${getTodayKey()}/${key}`).set({ name, items, total, timestamp: Date.now() });
+  const key = db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).push().key;
+  await db.ref(`orders/${GROUP_ID}/${getTodayKey()}/${key}`).set({ name, items, total, timestamp: Date.now() });
 }
 function toArr(val) {
   if (!val) return [];
   return Array.isArray(val) ? val : Object.values(val);
 }
 async function loadTodayOrders() {
-  const snap = await db.ref(`orders/${getTodayKey()}`).get();
+  const snap = await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).get();
   if (!snap.exists()) return [];
   const val = snap.val();
   // 保留 Firebase key，方便後續刪除
@@ -493,7 +498,7 @@ function updateCartBadge() {
 
 async function fetchHistory() {
   try {
-    const snap = await db.ref('history').get();
+    const snap = await db.ref(`history/${GROUP_ID}`).get();
     if (!snap.exists()) return [];
     return Object.values(snap.val())
       .map(entry => ({
@@ -627,7 +632,7 @@ historyBtn.addEventListener('click', async () => {
   </div>`;
 
   try {
-    const snap = await db.ref('history').get();
+    const snap = await db.ref(`history/${GROUP_ID}`).get();
     if (!snap.exists()) {
       body.innerHTML = '<p class="empty-hint">還沒有歷史訂單</p>';
       return;
@@ -769,13 +774,13 @@ function renderGroupOrders() {
       try {
         if (order.items.length === 0) {
           // 整筆訂單刪除
-          await db.ref(`orders/${getTodayKey()}/${fbKey}`).remove();
+          await db.ref(`orders/${GROUP_ID}/${getTodayKey()}/${fbKey}`).remove();
           groupOrders = groupOrders.filter(o => o._fbKey !== fbKey);
         } else {
           // 更新剩餘品項
           const cleanItems = order.items.map(({ _itemIdx, ...rest }) => rest);
           const newTotal   = order.items.reduce((s, i) => s + i.totalPrice, 0);
-          await db.ref(`orders/${getTodayKey()}/${fbKey}`).update({ items: cleanItems, total: newTotal });
+          await db.ref(`orders/${GROUP_ID}/${getTodayKey()}/${fbKey}`).update({ items: cleanItems, total: newTotal });
           order.total = newTotal;
         }
       } catch(e) {
@@ -824,7 +829,7 @@ document.getElementById('sendGroupBtn').addEventListener('click', async () => {
   const totalPrice = activeOrders.reduce((s, o) => s + o.total, 0);
   const allItems   = activeOrders.flatMap(o => o.items.map(({ _itemIdx, ...rest }) => rest));
   try {
-    await db.ref('history').push({
+    await db.ref(`history/${GROUP_ID}`).push({
       timestamp: Date.now(),
       name: '團購匯總',
       items: allItems,
@@ -833,7 +838,7 @@ document.getElementById('sendGroupBtn').addEventListener('click', async () => {
       people: activeOrders.map(o => o.name),
     });
   } catch(e) { showToast('⚠️ 歷史儲存失敗：' + e.message, 'error'); }
-  try { await db.ref(`orders/${getTodayKey()}`).remove(); } catch(e) {}
+  try { await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).remove(); } catch(e) {}
 
   groupOrders = [];
   groupModal.classList.remove('open');

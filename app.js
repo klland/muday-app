@@ -839,14 +839,28 @@ document.getElementById('sendGroupBtn').addEventListener('click', async () => {
 
   groupOrders = [];
   groupModal.classList.remove('open');
-  document.body.style.overflow = '';
 
-  // 傳送到 LINE（用 URL scheme，不會附加 LIFF URL）
-  const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
-  if (liff.isInClient()) {
-    liff.openWindow({ url: lineUrl, external: false });
-  } else {
-    window.location.href = lineUrl;
+  // 顯示複製 modal
+  document.getElementById('copyText').value = text;
+  document.getElementById('copyModal').classList.add('open');
+});
+
+// ===== 複製 Modal =====
+document.getElementById('closeCopyModal').addEventListener('click', () => {
+  document.getElementById('copyModal').classList.remove('open');
+  document.body.style.overflow = '';
+});
+
+document.getElementById('doCopyBtn').addEventListener('click', async () => {
+  const text = document.getElementById('copyText').value;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('✅ 已複製！請貼到 LINE 群組');
+  } catch(e) {
+    // fallback：選取 textarea 讓使用者手動複製
+    const ta = document.getElementById('copyText');
+    ta.select(); ta.setSelectionRange(0, text.length);
+    showToast('請長按選取後複製', 'error');
   }
 });
 

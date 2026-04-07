@@ -276,8 +276,10 @@ function createCatBtn(label, value, active) {
 
 function itemTags(item) {
   const t = [];
-  if (item.includesGrass)   t.push({ text: '含草仔粿',      cls: 'tag-green'  });
-  if (item.canCustomNoCaff) t.push({ text: '可客製無咖啡因', cls: 'tag-blue'   });
+  if (item.includesGrass)        t.push({ text: '含草仔粿',      cls: 'tag-green'  });
+  if (item.name.includes('粉粿')) t.push({ text: '含粉粿',        cls: 'tag-yellow' });
+  if (item.name.includes('仙草')) t.push({ text: '含仙草',        cls: 'tag-green'  });
+  if (item.canCustomNoCaff)      t.push({ text: '可客製無咖啡因', cls: 'tag-blue'   });
   if (item.hotOnly)         t.push({ text: '僅限熱飲',      cls: 'tag-red'    });
   if (item.fixedSweetIce)   t.push({ text: '甜度冰量固定',  cls: 'tag-gray'   });
   if (item.limitedSugar)    t.push({ text: '正常/半糖',     cls: 'tag-gray'   });

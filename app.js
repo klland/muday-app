@@ -474,6 +474,7 @@ function renderToppingChips() {
       selectedToppings = selectedToppings.includes(i)
         ? selectedToppings.filter(x => x !== i)
         : [...selectedToppings, i];
+      if (selectedToppings.length !== 2 || selectedToppings.includes(2)) selectedHalved = false;
       renderToppingChips();
       updateHotPowderWarning();
       updateModalTotal();
@@ -483,7 +484,7 @@ function renderToppingChips() {
 
   // 各半 chip — 只在選了 2 種加料時可用
   const halvedChip = document.createElement('span');
-  const canHalve = selectedToppings.length === 2;
+  const canHalve = selectedToppings.length === 2 && !selectedToppings.includes(2); // 雙粉不可各半
   halvedChip.className = 'opt-chip topping halved-chip' + (selectedHalved ? ' selected' : '') + (canHalve ? '' : ' disabled');
   halvedChip.textContent = '各半';
   halvedChip.title = '選兩種加料後可選各半，以較貴的料計價';

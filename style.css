@@ -346,6 +346,8 @@ body {
 .opt-chip:hover { border-color: var(--primary); color: var(--primary); }
 .opt-chip.selected { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
 .opt-chip.topping.selected { background: var(--secondary); border-color: var(--secondary); }
+.opt-chip.halved-chip.disabled { opacity: 0.35; cursor: not-allowed; }
+.opt-chip.halved-chip.disabled:hover { border-color: var(--border); color: inherit; }
 
 .qty-group {
   display: flex; align-items: center; justify-content: center;

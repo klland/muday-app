@@ -199,6 +199,7 @@ let selectedAddAcid    = false;
 let selectedThickenTea = false;
 let selectedNoCaff     = false;
 let selectedHot        = false;
+let selectedHalved     = false;
 let qty = 1;
 let lineProfile = null;
 let isInLiff    = false;
@@ -346,6 +347,7 @@ function openModal(item) {
   selectedThickenTea = false;
   selectedNoCaff = false;
   selectedHot = false;
+  selectedHalved = false;
   qty = 1;
 
   document.getElementById('modalTitle').textContent = item.name;
@@ -453,13 +455,20 @@ function renderToggleChip(containerId, label, type) {
   el.appendChild(chip);
 }
 
+function calcToppingExtra() {
+  if (selectedHalved && selectedToppings.length === 2) {
+    return Math.max(...selectedToppings.map(i => TOPPINGS[i].price));
+  }
+  return selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
+}
+
 function renderToppingChips() {
   const el = document.getElementById('toppingOptions');
   el.innerHTML = '';
   TOPPINGS.forEach((t, i) => {
     const chip = document.createElement('span');
     chip.className = 'opt-chip topping' + (selectedToppings.includes(i) ? ' selected' : '');
-    chip.textContent = `${t.label}${t.traceCaffeine ? ' ☕' : ''} +$${t.price}`;
+    chip.textContent = `${t.label} +$${t.price}`;
     chip.addEventListener('click', () => {
       selectedToppings = selectedToppings.includes(i)
         ? selectedToppings.filter(x => x !== i)
@@ -470,6 +479,20 @@ function renderToppingChips() {
     });
     el.appendChild(chip);
   });
+
+  // 各半 chip — 只在選了 2 種加料時可用
+  const halvedChip = document.createElement('span');
+  const canHalve = selectedToppings.length === 2;
+  halvedChip.className = 'opt-chip topping halved-chip' + (selectedHalved ? ' selected' : '') + (canHalve ? '' : ' disabled');
+  halvedChip.textContent = '各半';
+  halvedChip.title = '選兩種加料後可選各半，以較貴的料計價';
+  halvedChip.addEventListener('click', () => {
+    if (!canHalve) return;
+    selectedHalved = !selectedHalved;
+    renderToppingChips();
+    updateModalTotal();
+  });
+  el.appendChild(halvedChip);
 }
 
 const POWDER_TOPPING_INDICES = [0, 2]; // 招牌粉粿, 雙粉(粉粿+粉圓)
@@ -481,8 +504,7 @@ function updateHotPowderWarning() {
 
 function calcItemPrice() {
   if (!currentItem) return 0;
-  const toppingExtra = selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
-  return (currentItem.price + toppingExtra) * qty;
+  return (currentItem.price + calcToppingExtra()) * qty;
 }
 
 function updateModalTotal() {
@@ -518,14 +540,16 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   if (selectedNoCaff)     opts.push('無咖啡因');
   if (selectedHot)        opts.push('熱飲');
 
-  const toppingExtra = selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
+  const toppingExtra = calcToppingExtra();
+  const toppingLabels = selectedToppings.map(i => TOPPINGS[i].label);
+  if (selectedHalved && selectedToppings.length === 2) toppingLabels.push('各半');
 
   cart.push({
     id: Date.now(),
     name: item.name,
     emoji: item.emoji,
     opts,
-    toppings: selectedToppings.map(i => TOPPINGS[i].label),
+    toppings: toppingLabels,
     qty,
     unitPrice: item.price + toppingExtra,
     totalPrice: calcItemPrice(),

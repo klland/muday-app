@@ -447,6 +447,7 @@ function renderToggleChip(containerId, label, type) {
     else if (type === 'nocaff')  selectedNoCaff     = !selectedNoCaff;
     else                         selectedHot        = !selectedHot;
     renderToggleChip(containerId, label, type);
+    updateHotPowderWarning();
     updateModalTotal();
   });
   el.appendChild(chip);
@@ -464,10 +465,18 @@ function renderToppingChips() {
         ? selectedToppings.filter(x => x !== i)
         : [...selectedToppings, i];
       renderToppingChips();
+      updateHotPowderWarning();
       updateModalTotal();
     });
     el.appendChild(chip);
   });
+}
+
+const POWDER_TOPPING_INDICES = [0, 2]; // 招牌粉粿, 雙粉(粉粿+粉圓)
+function updateHotPowderWarning() {
+  const hasPowder = selectedToppings.some(i => POWDER_TOPPING_INDICES.includes(i));
+  const note = document.getElementById('hotPowderNote');
+  if (note) note.style.display = (selectedHot && hasPowder) ? 'block' : 'none';
 }
 
 function calcItemPrice() {

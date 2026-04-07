@@ -335,6 +335,7 @@ function itemCanHot(item) {
   if (!cat) return false;
   if (cat.category === '風味茶') return false;
   if (item.name.includes('粉粿')) return false;
+  if (item.name.includes('檸')) return false;
   return true;
 }
 
@@ -495,11 +496,17 @@ function renderToppingChips() {
   el.appendChild(halvedChip);
 }
 
-const POWDER_TOPPING_INDICES = [0, 2]; // 招牌粉粿, 雙粉(粉粿+粉圓)
+const HOT_MELT_TOPPINGS = { 0: '粉粿', 2: '粉粿', 5: '仙草' }; // 招牌粉粿, 雙粉, 嫩仙草
 function updateHotPowderWarning() {
-  const hasPowder = selectedToppings.some(i => POWDER_TOPPING_INDICES.includes(i));
+  const meltNames = [...new Set(selectedToppings.filter(i => i in HOT_MELT_TOPPINGS).map(i => HOT_MELT_TOPPINGS[i]))];
   const note = document.getElementById('hotPowderNote');
-  if (note) note.style.display = (selectedHot && hasPowder) ? 'block' : 'none';
+  if (!note) return;
+  if (selectedHot && meltNames.length > 0) {
+    note.textContent = `⚠️ ${meltNames.join('、')}遇熱會融化，請確認是否仍要加料`;
+    note.style.display = 'block';
+  } else {
+    note.style.display = 'none';
+  }
 }
 
 function calcItemPrice() {

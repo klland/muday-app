@@ -198,6 +198,7 @@ let selectedToppings   = [];
 let selectedAddAcid    = false;
 let selectedThickenTea = false;
 let selectedNoCaff     = false;
+let selectedHot        = false;
 let qty = 1;
 let lineProfile = null;
 let isInLiff    = false;
@@ -323,9 +324,15 @@ function createDrinkCard(item) {
 function itemHasLemon(item) {
   return item.name.includes('檸');
 }
-function itemCanThickenTea(item) {
+function itemCanThickenTea() {
+  return true;
+}
+function itemCanHot(item) {
   const cat = MENU.find(c => c.items.some(i => i.id === item.id));
-  return cat && (cat.category === '奶茶' || cat.category === '鮮奶茶');
+  if (!cat) return false;
+  if (cat.category === '風味茶') return false;
+  if (item.name.includes('粉粿')) return false;
+  return true;
 }
 
 // ===== Modal 客製化 =====
@@ -336,6 +343,7 @@ function openModal(item) {
   selectedAddAcid = false;
   selectedThickenTea = false;
   selectedNoCaff = false;
+  selectedHot = false;
   qty = 1;
 
   document.getElementById('modalTitle').textContent = item.name;
@@ -384,12 +392,15 @@ function openModal(item) {
   const acidGroup    = document.getElementById('addAcidGroup');
   const thickenGroup = document.getElementById('thickenTeaGroup');
   const noCaffGroup  = document.getElementById('noCaffGroup');
+  const hotGroup     = document.getElementById('hotGroup');
   acidGroup.style.display    = itemHasLemon(item) ? 'block' : 'none';
-  thickenGroup.style.display = itemCanThickenTea(item) ? 'block' : 'none';
+  thickenGroup.style.display = 'block';
   noCaffGroup.style.display  = item.canCustomNoCaff ? 'block' : 'none';
-  if (itemHasLemon(item))       renderToggleChip('addAcidOptions',    '加酸',      'acid');
-  if (itemCanThickenTea(item))  renderToggleChip('thickenTeaOptions', '茶加厚',    'thicken');
-  if (item.canCustomNoCaff)     renderToggleChip('noCaffOptions',     '無咖啡因',  'nocaff');
+  hotGroup.style.display     = itemCanHot(item) ? 'block' : 'none';
+  if (itemHasLemon(item))   renderToggleChip('addAcidOptions',    '加酸',     'acid');
+                            renderToggleChip('thickenTeaOptions', '茶加厚',   'thicken');
+  if (item.canCustomNoCaff) renderToggleChip('noCaffOptions',     '無咖啡因', 'nocaff');
+  if (itemCanHot(item))     renderToggleChip('hotOptions',        '熱飲',     'hot');
 
   renderToppingChips();
   updateModalTotal();
@@ -423,14 +434,16 @@ function renderChips(containerId, options, selectedIdx, type) {
 function renderToggleChip(containerId, label, type) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
-  const isSelected = type === 'acid' ? selectedAddAcid : type === 'thicken' ? selectedThickenTea : selectedNoCaff;
+  const stateMap = { acid: () => selectedAddAcid, thicken: () => selectedThickenTea, nocaff: () => selectedNoCaff, hot: () => selectedHot };
+  const isSelected = stateMap[type]();
   const chip = document.createElement('span');
   chip.className = 'opt-chip' + (isSelected ? ' selected' : '');
   chip.textContent = label;
   chip.addEventListener('click', () => {
-    if (type === 'acid') selectedAddAcid = !selectedAddAcid;
+    if      (type === 'acid')    selectedAddAcid    = !selectedAddAcid;
     else if (type === 'thicken') selectedThickenTea = !selectedThickenTea;
-    else selectedNoCaff = !selectedNoCaff;
+    else if (type === 'nocaff')  selectedNoCaff     = !selectedNoCaff;
+    else                         selectedHot        = !selectedHot;
     renderToggleChip(containerId, label, type);
     updateModalTotal();
   });
@@ -492,6 +505,7 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   if (selectedAddAcid)    opts.push('加酸');
   if (selectedThickenTea) opts.push('茶加厚');
   if (selectedNoCaff)     opts.push('無咖啡因');
+  if (selectedHot)        opts.push('熱飲');
 
   const toppingExtra = selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
 

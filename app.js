@@ -451,9 +451,20 @@ function renderToggleChip(containerId, label, type) {
     else                         selectedHot        = !selectedHot;
     renderToggleChip(containerId, label, type);
     updateHotPowderWarning();
+    updateIceGroup();
     updateModalTotal();
   });
   el.appendChild(chip);
+}
+
+function updateIceGroup() {
+  const iceGroup = document.getElementById('iceGroup');
+  if (!iceGroup) return;
+  if (selectedHot) {
+    iceGroup.style.display = 'none';
+  } else if (currentItem && !currentItem.fixedSweetIce && !currentItem.hotOnly && !currentItem.fixedIce) {
+    iceGroup.style.display = 'block';
+  }
 }
 
 function calcToppingExtra() {

@@ -62,7 +62,7 @@ const MENU = [
       { id: 302, name: '糯香奶茶',     emoji: '🍶', price: 60, kcal: 355, caffeine: 2 },
       { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, kcal: 420, caffeine: 1, limitedSugar: true, traceCaffeine: true },
       { id: 304, name: '黃金蕎麥奶茶', emoji: '🌾', price: 55, kcal: 340, caffeine: 0, caffeineFree: true },
-      { id: 305, name: '逮丸奶茶',     emoji: '🟤', price: 75, kcal: 490, caffeine: 2, includesGrass: true },
+      { id: 305, name: '逮丸奶茶',     emoji: '🟢', price: 75, kcal: 490, caffeine: 2, includesGrass: true },
       { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70, kcal: 430, caffeine: 2 },
       { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 340, caffeine: 3 },
       { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 345, caffeine: 2 },
@@ -197,6 +197,7 @@ let selectedPeppercorn = 0;
 let selectedToppings   = [];
 let selectedAddAcid    = false;
 let selectedThickenTea = false;
+let selectedNoCaff     = false;
 let qty = 1;
 let lineProfile = null;
 let isInLiff    = false;
@@ -275,8 +276,6 @@ function createCatBtn(label, value, active) {
 function itemTags(item) {
   const t = [];
   if (item.includesGrass)   t.push({ text: '含草仔粿',      cls: 'tag-green'  });
-  if (item.caffeineFree)    t.push({ text: '無咖啡因',      cls: 'tag-green'  });
-  if (item.traceCaffeine)   t.push({ text: '微量咖啡因',    cls: 'tag-yellow' });
   if (item.canCustomNoCaff) t.push({ text: '可客製無咖啡因', cls: 'tag-blue'   });
   if (item.hotOnly)         t.push({ text: '僅限熱飲',      cls: 'tag-red'    });
   if (item.fixedSweetIce)   t.push({ text: '甜度冰量固定',  cls: 'tag-gray'   });
@@ -336,6 +335,7 @@ function openModal(item) {
   selectedToppings = [];
   selectedAddAcid = false;
   selectedThickenTea = false;
+  selectedNoCaff = false;
   qty = 1;
 
   document.getElementById('modalTitle').textContent = item.name;
@@ -381,12 +381,15 @@ function openModal(item) {
   ppGroup.style.display = item.hasPeppercorn ? 'block' : 'none';
   if (item.hasPeppercorn) renderChips('peppercornOptions', PEPPERCORN, 0, 'peppercorn');
 
-  const acidGroup   = document.getElementById('addAcidGroup');
+  const acidGroup    = document.getElementById('addAcidGroup');
   const thickenGroup = document.getElementById('thickenTeaGroup');
+  const noCaffGroup  = document.getElementById('noCaffGroup');
   acidGroup.style.display    = itemHasLemon(item) ? 'block' : 'none';
   thickenGroup.style.display = itemCanThickenTea(item) ? 'block' : 'none';
-  if (itemHasLemon(item))       renderToggleChip('addAcidOptions',    '加酸',  'acid');
-  if (itemCanThickenTea(item))  renderToggleChip('thickenTeaOptions', '茶加厚', 'thicken');
+  noCaffGroup.style.display  = item.canCustomNoCaff ? 'block' : 'none';
+  if (itemHasLemon(item))       renderToggleChip('addAcidOptions',    '加酸',      'acid');
+  if (itemCanThickenTea(item))  renderToggleChip('thickenTeaOptions', '茶加厚',    'thicken');
+  if (item.canCustomNoCaff)     renderToggleChip('noCaffOptions',     '無咖啡因',  'nocaff');
 
   renderToppingChips();
   updateModalTotal();
@@ -420,13 +423,14 @@ function renderChips(containerId, options, selectedIdx, type) {
 function renderToggleChip(containerId, label, type) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
-  const isSelected = type === 'acid' ? selectedAddAcid : selectedThickenTea;
+  const isSelected = type === 'acid' ? selectedAddAcid : type === 'thicken' ? selectedThickenTea : selectedNoCaff;
   const chip = document.createElement('span');
   chip.className = 'opt-chip' + (isSelected ? ' selected' : '');
   chip.textContent = label;
   chip.addEventListener('click', () => {
     if (type === 'acid') selectedAddAcid = !selectedAddAcid;
-    else selectedThickenTea = !selectedThickenTea;
+    else if (type === 'thicken') selectedThickenTea = !selectedThickenTea;
+    else selectedNoCaff = !selectedNoCaff;
     renderToggleChip(containerId, label, type);
     updateModalTotal();
   });
@@ -487,6 +491,7 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   if (item.hasPeppercorn) opts.push(PEPPERCORN[selectedPeppercorn] + '麻');
   if (selectedAddAcid)    opts.push('加酸');
   if (selectedThickenTea) opts.push('茶加厚');
+  if (selectedNoCaff)     opts.push('無咖啡因');
 
   const toppingExtra = selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
 

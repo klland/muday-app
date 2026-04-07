@@ -112,9 +112,9 @@ const SUGARS_LIMITED = ['正常甜', '半糖'];
 const ICES           = ['正常冰', '少冰', '微冰', '去冰(小碎冰)', '完全去冰'];
 const PEPPERCORN     = ['不麻', '微麻', '正常麻', '多麻'];
 const TOPPINGS = [
-  { label: '招牌粉粿',        price: 15, traceCaffeine: true },
+  { label: '招牌粉粿',        price: 15 },
   { label: '草仔粿',          price: 15 },
-  { label: '雙粉(粉粿+粉圓)', price: 15, traceCaffeine: true },
+  { label: '雙粉(粉粿+粉圓)', price: 15 },
   { label: '琥珀粉圓',        price: 10 },
   { label: '蘆薈',            price: 15 },
   { label: '嫩仙草',          price: 10 },
@@ -195,6 +195,8 @@ let selectedSugar = 0;
 let selectedIce   = 0;
 let selectedPeppercorn = 0;
 let selectedToppings   = [];
+let selectedAddAcid    = false;
+let selectedThickenTea = false;
 let qty = 1;
 let lineProfile = null;
 let isInLiff    = false;
@@ -284,7 +286,7 @@ function itemTags(item) {
   return t;
 }
 
-const CAFFEINE_LABELS = ['無咖', '微咖', '中咖', '高咖'];
+const CAFFEINE_LABELS = ['無咖啡因', '微咖啡因', '中咖啡因', '高咖啡因'];
 const CAFFEINE_COLORS = ['caff-none', 'caff-low', 'caff-mid', 'caff-high'];
 
 function createDrinkCard(item) {
@@ -319,11 +321,21 @@ function createDrinkCard(item) {
   return card;
 }
 
+function itemHasLemon(item) {
+  return item.name.includes('檸');
+}
+function itemCanThickenTea(item) {
+  const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+  return cat && (cat.category === '奶茶' || cat.category === '鮮奶茶');
+}
+
 // ===== Modal 客製化 =====
 function openModal(item) {
   currentItem = item;
   selectedSugar = selectedIce = selectedPeppercorn = 0;
   selectedToppings = [];
+  selectedAddAcid = false;
+  selectedThickenTea = false;
   qty = 1;
 
   document.getElementById('modalTitle').textContent = item.name;
@@ -369,6 +381,13 @@ function openModal(item) {
   ppGroup.style.display = item.hasPeppercorn ? 'block' : 'none';
   if (item.hasPeppercorn) renderChips('peppercornOptions', PEPPERCORN, 0, 'peppercorn');
 
+  const acidGroup   = document.getElementById('addAcidGroup');
+  const thickenGroup = document.getElementById('thickenTeaGroup');
+  acidGroup.style.display    = itemHasLemon(item) ? 'block' : 'none';
+  thickenGroup.style.display = itemCanThickenTea(item) ? 'block' : 'none';
+  if (itemHasLemon(item))       renderToggleChip('addAcidOptions',    '加酸',  'acid');
+  if (itemCanThickenTea(item))  renderToggleChip('thickenTeaOptions', '茶加厚', 'thicken');
+
   renderToppingChips();
   updateModalTotal();
   customModal.classList.add('open');
@@ -396,6 +415,22 @@ function renderChips(containerId, options, selectedIdx, type) {
     });
     el.appendChild(chip);
   });
+}
+
+function renderToggleChip(containerId, label, type) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  const isSelected = type === 'acid' ? selectedAddAcid : selectedThickenTea;
+  const chip = document.createElement('span');
+  chip.className = 'opt-chip' + (isSelected ? ' selected' : '');
+  chip.textContent = label;
+  chip.addEventListener('click', () => {
+    if (type === 'acid') selectedAddAcid = !selectedAddAcid;
+    else selectedThickenTea = !selectedThickenTea;
+    renderToggleChip(containerId, label, type);
+    updateModalTotal();
+  });
+  el.appendChild(chip);
 }
 
 function renderToppingChips() {
@@ -450,6 +485,8 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
     if (item.fixedIce) opts.push('冰量固定');
   }
   if (item.hasPeppercorn) opts.push(PEPPERCORN[selectedPeppercorn] + '麻');
+  if (selectedAddAcid)    opts.push('加酸');
+  if (selectedThickenTea) opts.push('茶加厚');
 
   const toppingExtra = selectedToppings.reduce((s, i) => s + TOPPINGS[i].price, 0);
 

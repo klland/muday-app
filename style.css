@@ -366,6 +366,8 @@ body {
   padding: 12px 18px 0; border-top: 1px solid var(--border); margin-top: 4px; gap: 10px;
 }
 .modal-total { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+.modal-footer-left { display: flex; flex-direction: column; gap: 2px; }
+.modal-kcal-est { font-size: 0.78rem; color: #888; }
 .add-btn {
   background: var(--primary); color: #fff; border: none; border-radius: 50px;
   padding: 11px 26px; font-size: 0.92rem; font-weight: 700;

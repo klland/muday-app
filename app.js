@@ -550,7 +550,7 @@ function calcEstKcal() {
     toppingKcal = selectedToppings.reduce((s, i) => s + TOPPINGS[i].kcal, 0);
   }
 
-  return Math.round((drinkKcal + toppingKcal) / 50) * 50;
+  return Math.round((drinkKcal + toppingKcal) / 10) * 10;
 }
 
 function calcItemPrice() {

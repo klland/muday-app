@@ -42,14 +42,14 @@ const MENU = [
     items: [
       { id: 201, name: '牡丹高山青',    emoji: '🌸🏔️', price: 60, kcal: 150, caffeine: 2, limitedSugar: true },
       { id: 202, name: '牡丹蕎麥茶',    emoji: '🌸🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true },
-      { id: 203, name: '粉粿牡丹檸檬',  emoji: '🌸🍋', price: 70, kcal: 470, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 203, name: '粉粿牡丹檸檬',  emoji: '🌸🍋', price: 70, kcal: 470, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 204, name: '酸梅湯烏龍綠',  emoji: '🍑🌿', price: 65, kcal: 170, caffeine: 2, fixedSweetIce: true },
       { id: 205, name: '輕檸烏龍綠',    emoji: '🍋🌿', price: 65, kcal: 200, caffeine: 2 },
       { id: 206, name: '糯香檸檬茶',    emoji: '🍋🍶', price: 65, kcal: 390, caffeine: 2 },
-      { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼🍋', price: 70, kcal: 360, caffeine: 1, limitedSugar: true, traceCaffeine: true },
-      { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎🍋', price: 70, kcal: 350, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼🍋', price: 70, kcal: 360, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
+      { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎🍋', price: 70, kcal: 350, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 209, name: '荔枝烏龍',      emoji: '🍒🫖', price: 60, kcal: 350, caffeine: 2 },
-      { id: 210, name: '荔枝蘆薈',      emoji: '🍒', price: 65, kcal: 270, caffeine: 2, fixedSweetIce: true },
+      { id: 210, name: '荔枝蘆薈',      emoji: '🍒', price: 65, kcal: 270, caffeine: 2, fixedSweetIce: true, builtInKcal: 100 },
       { id: 211, name: '檸檬紅茶',      emoji: '🍋🍂', price: 60, kcal: 390, caffeine: 3 },
       { id: 212, name: '檸檬高山青',    emoji: '🍋🏔️', price: 60, kcal: 390, caffeine: 2 },
       { id: 213, name: '桂花蕎麥茶',    emoji: '🌼🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true },
@@ -60,14 +60,14 @@ const MENU = [
     items: [
       { id: 301, name: '烏龍綠奶茶',   emoji: '🌿', price: 60, kcal: 500, caffeine: 2 },
       { id: 302, name: '糯香奶茶',     emoji: '🍶', price: 60, kcal: 440, caffeine: 2 },
-      { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, kcal: 450, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, kcal: 450, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 304, name: '黃金蕎麥奶茶', emoji: '🌾', price: 55, kcal: 500, caffeine: 0, caffeineFree: true },
-      { id: 305, name: '逮丸奶茶',     emoji: '🟢', price: 75, kcal: 630, caffeine: 2, includesGrass: true },
+      { id: 305, name: '逮丸奶茶',     emoji: '🟢', price: 75, kcal: 630, caffeine: 2, includesGrass: true, builtInKcal: 90 },
       { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70, kcal: 550, caffeine: 2 },
       { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 500, caffeine: 3 },
       { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 490, caffeine: 2 },
       { id: 309, name: '高山青奶茶',   emoji: '🏔️', price: 55, kcal: 500, caffeine: 2 },
-      { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65, kcal: 360, caffeine: 2 },
+      { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65, kcal: 360, caffeine: 2, builtInKcal: 90 },
     ]
   },
   {
@@ -90,7 +90,7 @@ const MENU = [
       { id: 504, name: '烏龍鮮奶茶',     emoji: '🫖', price: 75, kcal: 290, caffeine: 2 },
       { id: 505, name: '島韻紅鮮奶茶',   emoji: '🍂', price: 75, kcal: 320, caffeine: 3 },
       { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85, kcal: 500, caffeine: 2 },
-      { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, kcal: 480, caffeine: 1, limitedSugar: true, traceCaffeine: true },
+      { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, kcal: 480, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 509, name: '高山青鮮奶茶',   emoji: '🏔️', price: 75, kcal: 330, caffeine: 2 },
     ]
   },
@@ -541,7 +541,8 @@ function calcEstKcal() {
     sugarRatio = ratios[selectedSugar] ?? 1.0;
   }
 
-  const drinkKcal = baseKcal + (item.kcal - baseKcal) * sugarRatio;
+  const builtIn = item.builtInKcal || 0;
+  const drinkKcal = baseKcal + builtIn + (item.kcal - baseKcal - builtIn) * sugarRatio;
 
   let toppingKcal = 0;
   if (selectedHalved && selectedToppings.length === 2) {

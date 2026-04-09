@@ -1,4 +1,4 @@
-# Muday App 木的飲料點餐系統
+# Muday App u 一沐日飲料點餐系統
 
 LINE LIFF 飲料點餐 Web App，整合 Firebase Realtime Database，支援多群組隔離、熱量計算與咖啡因追蹤。
 

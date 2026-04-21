@@ -15,17 +15,42 @@
   <header class="header">
     <div class="header-inner">
       <div class="logo">
-        <img src="logo.jpeg" alt="一沐日" class="logo-img" />
+        <div class="logo-icon">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="17" cy="17" r="7" fill="#c8845a"/>
+            <line x1="17" y1="3" x2="17" y2="7" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="17" y1="27" x2="17" y2="31" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="17" x2="7" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27" y1="17" x2="31" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7.05" y1="7.05" x2="9.88" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="24.12" y1="24.12" x2="26.95" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="26.95" y1="7.05" x2="24.12" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9.88" y1="24.12" x2="7.05" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
         <div class="logo-text-wrap">
           <span class="logo-text">一沐日</span>
           <span class="logo-sub" id="lineUserName"></span>
         </div>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" id="historyBtn" title="歷史訂單">📋</button>
-        <button class="icon-btn" id="groupBtn" title="今日團購">👥</button>
+        <button class="icon-btn" id="historyBtn" title="歷史訂單">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="groupBtn" title="今日團購">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="2.2"/>
+            <path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 13c2.2 0 4 1.8 4 4"/>
+          </svg>
+        </button>
         <button class="cart-btn" id="cartBtn">
-          <span>🛒</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
           <span class="cart-badge" id="cartBadge">0</span>
         </button>
       </div>
@@ -58,7 +83,7 @@
         <span>合計</span>
         <span id="cartTotal">$0</span>
       </div>
-      <button class="checkout-btn" id="checkoutBtn">✅ 送出訂單</button>
+      <button class="checkout-btn" id="checkoutBtn">送出訂單</button>
     </div>
   </aside>
   <div class="overlay" id="overlay"></div>
@@ -75,7 +100,7 @@
       </div>
       <div class="modal-body">
         <p id="modalPrice" class="modal-price"></p>
-        <div class="fixed-note" id="fixedNote" style="display:none">⚠️ 此飲品甜度與冰量固定，不可調整</div>
+        <div class="fixed-note" id="fixedNote" style="display:none">此飲品甜度與冰量固定，不可調整</div>
         <div class="option-group" id="sugarGroup">
           <label>甜度</label>
           <div class="option-row" id="sugarOptions"></div>

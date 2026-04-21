@@ -23,6 +23,12 @@ const GROUP_ID = new URLSearchParams(window.location.search).get('group') || 'de
 // ============================================================
 const LIFF_ID = '2009621528-uT75vRTv';
 
+// 每個 theme 的英文標
+const THEME_EN = {
+  green: 'Pure Tea', pink: 'Flavor Tea', brown: 'Milk Tea',
+  gold: 'Cheese Cap', blue: 'Fresh Milk', teal: 'Winter Melon',
+};
+
 // ===== 菜單資料 =====
 // kcal: 大杯正常甜估算值  caffeine: 0=無 1=微量(<100mg) 2=中(101-200mg) 3=高(>200mg)
 const MENU = [
@@ -302,17 +308,19 @@ function createDrinkCard(item) {
   const card = document.createElement('div');
   card.className = `drink-card theme-${item.theme || 'green'}`;
   const caffeineIdx = item.caffeine ?? 2;
+  const themeEn = THEME_EN[item.theme || 'green'] || '';
   card.innerHTML = `
     <div class="drink-img">
-      <span class="drink-emoji">${item.emoji}</span>
+      <span class="drink-en">${themeEn}</span>
+      <div class="drink-circle"></div>
       <button class="fav-btn${isFav ? ' active' : ''}" data-id="${item.id}">★</button>
     </div>
     <div class="drink-info">
       <div class="drink-name">${item.name}</div>
       ${tags.length ? `<div class="drink-tags">${tags.map(t => `<span class="tag ${t.cls}">${t.text}</span>`).join('')}</div>` : ''}
       <div class="drink-meta">
-        <span class="meta-kcal">🔥 ${item.kcal ?? '—'} kcal</span>
-        <span class="meta-caff ${CAFFEINE_COLORS[caffeineIdx]}">☕ ${CAFFEINE_LABELS[caffeineIdx]}</span>
+        <span class="meta-kcal">${item.kcal ?? '—'} kcal</span>
+        <span class="meta-caff ${CAFFEINE_COLORS[caffeineIdx]}">${CAFFEINE_LABELS[caffeineIdx]}</span>
       </div>
       <div class="drink-footer">
         <span class="drink-price">$${item.price}</span>

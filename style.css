@@ -57,10 +57,9 @@ body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .logo { display: flex; align-items: center; gap: 10px; }
-.logo-img {
-  width: 42px; height: 42px; border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+.logo-icon {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
 .logo-text-wrap { display: flex; flex-direction: column; }
@@ -81,13 +80,15 @@ body {
   transition: background 0.2s;
 }
 .icon-btn:hover { background: #f5dece; }
+.icon-btn svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; }
 
 .cart-btn {
   background: var(--primary); border: none; border-radius: 50px;
   padding: 7px 14px; cursor: pointer;
-  display: flex; align-items: center; gap: 6px; font-size: 1rem;
+  display: flex; align-items: center; gap: 6px;
   transition: background 0.2s, transform 0.2s;
 }
+.cart-btn svg { width: 17px; height: 17px; stroke: #fff; fill: none; }
 .cart-btn:hover { background: var(--primary-dark); }
 .cart-badge {
   background: #fff; color: var(--primary);
@@ -148,18 +149,33 @@ body {
 .drink-img {
   width: 100%; height: 90px;
   position: relative;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.6rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 6px; overflow: hidden;
 }
-/* 每個系列不同漸層背景 */
-.theme-green  .drink-img { background: linear-gradient(135deg, #e8f5e4, #cce8c4); }
-.theme-pink   .drink-img { background: linear-gradient(135deg, #fde8f0, #f8c8de); }
-.theme-brown  .drink-img { background: linear-gradient(135deg, #fdf0e4, #f5ddc4); }
-.theme-gold   .drink-img { background: linear-gradient(135deg, #fdf6e0, #f5e4b0); }
-.theme-blue   .drink-img { background: linear-gradient(135deg, #e4f0fd, #c4d8f5); }
-.theme-teal   .drink-img { background: linear-gradient(135deg, #e0f5f0, #b8e8de); }
+.drink-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.15));
+  pointer-events: none;
+}
+/* 每個系列不同漸層背景（飽和深色版） */
+.theme-green  .drink-img { background: linear-gradient(135deg, #7aac6e, #a8d49a); }
+.theme-pink   .drink-img { background: linear-gradient(135deg, #e8856a, #f0a898); }
+.theme-brown  .drink-img { background: linear-gradient(135deg, #c8845a, #e8a87c); }
+.theme-gold   .drink-img { background: linear-gradient(135deg, #d4a44c, #f0c870); }
+.theme-blue   .drink-img { background: linear-gradient(135deg, #5a8e6e, #80b898); }
+.theme-teal   .drink-img { background: linear-gradient(135deg, #5a8090, #88b0c0); }
 
-.drink-emoji { pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12)); }
+.drink-en {
+  font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.75); line-height: 1; z-index: 1;
+}
+.drink-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.35); z-index: 1;
+}
 
 /* ===== Favorite Button ===== */
 .fav-btn {

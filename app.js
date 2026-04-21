@@ -23,10 +23,81 @@ const GROUP_ID = new URLSearchParams(window.location.search).get('group') || 'de
 // ============================================================
 const LIFF_ID = '2009621528-uT75vRTv';
 
-// 每個 theme 的英文標
 const THEME_EN = {
   green: 'Pure Tea', pink: 'Flavor Tea', brown: 'Milk Tea',
   gold: 'Cheese Cap', blue: 'Fresh Milk', teal: 'Winter Melon',
+};
+
+// 每個 theme 的杯子填色
+const THEME_CUP_COLOR = {
+  green: '#8a9a6a', pink: '#b87060', brown: '#8a5a38',
+  gold:  '#b08438', blue: '#4a7080', teal:  '#4a7060',
+};
+
+// 每個 theme 的杯子底色（較深）
+const THEME_CUP_DARK = {
+  green: '#6a7a52', pink: '#9a5848', brown: '#6a3a20',
+  gold:  '#906428', blue: '#2a5060', teal:  '#2a5040',
+};
+
+// 手繪風杯子 SVG，依 theme 色彩
+function cupSvg(theme) {
+  const fill = THEME_CUP_COLOR[theme] || '#8a7060';
+  const dark = THEME_CUP_DARK[theme]  || '#6a5040';
+  return `<svg viewBox="0 0 56 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 杯蓋 -->
+    <ellipse cx="28" cy="14" rx="16" ry="3.5" fill="#f7efdc" stroke="#2d2418" stroke-width="1"/>
+    <rect x="12" y="13" width="32" height="4" rx="0" fill="#f7efdc"/>
+    <!-- 吸管 -->
+    <line x1="31" y1="14" x2="34" y2="4" stroke="#2d2418" stroke-width="1.4" stroke-linecap="round"/>
+    <!-- 杯身 -->
+    <path d="M13 17 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L43 17 Z" fill="${fill}" opacity="0.88"/>
+    <!-- 杯底層色 -->
+    <path d="M17 48 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L39 48 Z" fill="${dark}" opacity="0.75"/>
+    <!-- 杯身外框 -->
+    <path d="M13 17 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L43 17" fill="none" stroke="#2d2418" stroke-width="1" stroke-linejoin="round"/>
+    <!-- 杯蓋上緣線 -->
+    <line x1="12" y1="17" x2="44" y2="17" stroke="#2d2418" stroke-width="1"/>
+  </svg>`;
+}
+
+// 每個 series 的流水編號前綴
+const SERIES_PREFIX = { '茶人系列': 'T', '講究系列': 'F', '香醇系列': 'M', '濃韻系列': 'C', '自然系列': 'N', '堅持系列': 'W' };
+
+// 每張卡片的 item 在該 series 中的排序（1-based）
+function itemSeriesIndex(item) {
+  const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+  if (!cat) return 0;
+  return cat.items.findIndex(i => i.id === item.id) + 1;
+}
+
+// 每張卡片的英文飲品名
+const DRINK_EN = {
+  101: 'Light Oolong Green',   102: 'Glutinous Rice Tea',
+  103: 'Island Black Tea',     104: 'Charcoal Oolong',
+  105: 'Buckwheat Tea',        106: 'High Mountain Green',
+  201: 'Peony High Mountain',  202: 'Peony Buckwheat',
+  203: 'Tapioca Peony Lemon',  204: 'Plum Oolong',
+  205: 'Lemon Oolong',         206: 'Glutinous Lemon',
+  207: 'Osmanthus Lemon',      208: 'Brown Sugar Lemon',
+  209: 'Lychee Oolong',        210: 'Lychee Aloe',
+  211: 'Lemon Black Tea',      212: 'Lemon High Mountain',
+  213: 'Osmanthus Buckwheat',
+  301: 'Oolong Green Milk',    302: 'Glutinous Milk Tea',
+  303: 'Brown Sugar Milk',     304: 'Buckwheat Milk Tea',
+  305: 'Taiwan Milk Tea',      306: 'Black Sesame Milk',
+  307: 'Island Milk Tea',      308: 'Oolong Milk Tea',
+  309: 'High Mountain Milk',   311: 'Grass Jelly Milk',
+  401: 'Cheese Oolong Green',  402: 'Cheese Glutinous',
+  403: 'Cheese Island Black',  404: 'Cheese Oolong',
+  405: 'Cheese Buckwheat',     406: 'Cheese High Mountain',
+  501: 'Fresh Oolong Green',   502: 'Glutinous Fresh Milk',
+  503: 'Buckwheat Fresh Milk', 504: 'Oolong Fresh Milk',
+  505: 'Island Fresh Milk',    506: 'Black Sesame Fresh',
+  508: 'Brown Sugar Fresh',    509: 'High Mountain Fresh',
+  601: 'Winter Melon Black',   602: 'Winter Melon Green',
+  603: 'Winter Melon Lemon',   604: 'Winter Melon Jelly',
+  605: 'Winter Melon Buck',    606: 'Winter Melon Oolong',
 };
 
 // ===== 菜單資料 =====
@@ -240,9 +311,9 @@ const groupModal   = document.getElementById('groupModal');
 // ===== 建立菜單 =====
 function buildMenu(filterCat = null) {
   categoryNav.innerHTML = '';
-  categoryNav.appendChild(createCatBtn('全部', null, filterCat === null));
-  categoryNav.appendChild(createCatBtn('⭐ 最愛', 'favorites', filterCat === 'favorites'));
-  MENU.forEach(cat => categoryNav.appendChild(createCatBtn(cat.category, cat.category, filterCat === cat.category)));
+  categoryNav.appendChild(createCatBtn('全部', null, filterCat === null, 'All'));
+  categoryNav.appendChild(createCatBtn('最愛', 'favorites', filterCat === 'favorites', 'Favorites'));
+  MENU.forEach(cat => categoryNav.appendChild(createCatBtn(cat.category, cat.category, filterCat === cat.category, THEME_EN[cat.theme] || '')));
 
   menuSection.innerHTML = '';
 
@@ -255,7 +326,7 @@ function buildMenu(filterCat = null) {
     }
     const title = document.createElement('div');
     title.className = 'category-title';
-    title.innerHTML = '<span class="cat-name">⭐ 我的最愛</span>';
+    title.innerHTML = `<div class="category-title-left"><span class="series-name">favorites</span><span class="cat-name">我的最愛</span></div><span class="cat-count">${favItems.length} items</span>`;
     menuSection.appendChild(title);
     const grid = document.createElement('div');
     grid.className = 'menu-grid';
@@ -268,7 +339,7 @@ function buildMenu(filterCat = null) {
     if (filterCat && cat.category !== filterCat) return;
     const title = document.createElement('div');
     title.className = 'category-title';
-    title.innerHTML = `<span class="series-name">${cat.series}</span><span class="cat-name">${cat.emoji_cat} ${cat.category}</span>`;
+    title.innerHTML = `<div class="category-title-left"><span class="series-name">${THEME_EN[cat.theme] || cat.series}</span><span class="cat-name">${cat.category}</span></div><span class="cat-count">${cat.items.length} items</span>`;
     menuSection.appendChild(title);
     const grid = document.createElement('div');
     grid.className = 'menu-grid';
@@ -277,10 +348,10 @@ function buildMenu(filterCat = null) {
   });
 }
 
-function createCatBtn(label, value, active) {
+function createCatBtn(label, value, active, enLabel = '') {
   const btn = document.createElement('button');
   btn.className = 'cat-btn' + (active ? ' active' : '');
-  btn.textContent = label;
+  btn.innerHTML = `${label}${enLabel ? `<span class="cat-en">${enLabel}</span>` : ''}`;
   btn.addEventListener('click', () => buildMenu(value));
   return btn;
 }
@@ -306,33 +377,47 @@ function createDrinkCard(item) {
   const tags = itemTags(item);
   const isFav = getFavorites().has(item.id);
   const card = document.createElement('div');
-  card.className = `drink-card theme-${item.theme || 'green'}`;
+  card.className = `drink-card`;
   const caffeineIdx = item.caffeine ?? 2;
-  const themeEn = THEME_EN[item.theme || 'green'] || '';
+  const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+  const prefix = cat ? (SERIES_PREFIX[cat.series] || 'X') : 'X';
+  const idx = itemSeriesIndex(item);
+  const code = `${prefix}·${String(idx).padStart(2, '0')}`;
+  const enName = DRINK_EN[item.id] || '';
+  const drinkEn = enName || (THEME_EN[item.theme || 'green'] || '');
+
+  // badge: 人氣 for popular items (kcal > 450), 特調 for special
+  let badge = '';
+  if (item.includesGrass || item.name.includes('逮丸')) badge = '特調';
+  else if (item.name.includes('粉粿') && item.name.includes('黑糖')) badge = '人氣';
+
   card.innerHTML = `
+    ${badge ? `<div class="drink-badge">${badge}</div>` : ''}
+    <div class="drink-code">${code}</div>
     <div class="drink-img">
-      <span class="drink-en">${themeEn}</span>
-      <div class="drink-circle"></div>
+      ${cupSvg(item.theme || 'brown')}
       <button class="fav-btn${isFav ? ' active' : ''}" data-id="${item.id}">★</button>
     </div>
     <div class="drink-info">
       <div class="drink-name">${item.name}</div>
+      <div class="drink-name-en">${drinkEn}</div>
       ${tags.length ? `<div class="drink-tags">${tags.map(t => `<span class="tag ${t.cls}">${t.text}</span>`).join('')}</div>` : ''}
       <div class="drink-meta">
-        <span class="meta-kcal">${item.kcal ?? '—'} kcal</span>
-        <span class="meta-caff ${CAFFEINE_COLORS[caffeineIdx]}">${CAFFEINE_LABELS[caffeineIdx]}</span>
+        <span>${item.kcal ?? '—'}kc</span>
+        <span class="meta-caff ${CAFFEINE_COLORS[caffeineIdx]}"></span>
       </div>
-      <div class="drink-footer">
-        <span class="drink-price">$${item.price}</span>
-        <span class="add-icon">＋</span>
-      </div>
+      <div class="drink-divider"></div>
+      <div class="drink-price"><span class="nt">NT$</span>${item.price}</div>
     </div>`;
   card.querySelector('.fav-btn').addEventListener('click', e => {
     e.stopPropagation();
     const isNowFav = toggleFavorite(item.id);
     e.currentTarget.classList.toggle('active', isNowFav);
   });
-  card.addEventListener('click', () => openModal(item));
+  card.addEventListener('click', e => {
+    if (e.target.closest('.fav-btn')) return;
+    openModal(item);
+  });
   return card;
 }
 
@@ -646,8 +731,23 @@ function updateCartBadge() {
   const n = cart.reduce((s, i) => s + i.qty, 0);
   cartBadge.textContent = n;
   cartBadge.classList.remove('bounce');
-  void cartBadge.offsetWidth; // reflow
+  void cartBadge.offsetWidth;
   cartBadge.classList.add('bounce');
+  updateStickyBar();
+}
+
+function updateStickyBar() {
+  const stickyBar = document.getElementById('stickyBar');
+  const n = cart.reduce((s, i) => s + i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.totalPrice, 0);
+  if (n > 0) {
+    stickyBar.classList.add('show');
+    document.getElementById('stickyBadge').textContent = n;
+    document.getElementById('stickyCups').textContent = `${n} 杯・合計`;
+    document.getElementById('stickyTotal').textContent = total;
+  } else {
+    stickyBar.classList.remove('show');
+  }
 }
 
 async function fetchHistory() {
@@ -690,7 +790,7 @@ async function renderCart() {
     div.className = 'cart-item';
     const detail = [...item.opts, ...(item.toppings.length ? ['加：' + item.toppings.join('、')] : [])].join(' · ');
     div.innerHTML = `
-      <span class="cart-item-emoji">${item.emoji}</span>
+      <div class="cart-item-icon">${item.name.slice(0, 2)}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name} × ${item.qty}</div>
         <div class="cart-item-opts">${detail}</div>
@@ -709,7 +809,7 @@ async function renderCart() {
       renderCart();
     });
   });
-  cartTotalEl.textContent = `$${cart.reduce((s, i) => s + i.totalPrice, 0)}`;
+  cartTotalEl.textContent = cart.reduce((s, i) => s + i.totalPrice, 0);
   cartFooter.style.display = 'block';
 }
 
@@ -755,7 +855,7 @@ checkoutBtn.addEventListener('click', async () => {
 
   document.getElementById('successName').textContent = `${name} 的訂單`;
   document.getElementById('successItems').innerHTML = cartSnapshot
-    .map(i => `<div class="success-item"><span>${i.emoji} ${i.name} × ${i.qty}</span><span>$${i.totalPrice}</span></div>`)
+    .map(i => `<div class="success-item"><span>${i.name} × ${i.qty}</span><span>$${i.totalPrice}</span></div>`)
     .join('');
 
   cart = [];
@@ -809,7 +909,7 @@ historyBtn.addEventListener('click', async () => {
       const div = document.createElement('div');
       div.className = 'history-item';
       const itemsHtml = order.items.map(i => `
-        <div class="history-drink">${i.emoji || ''} ${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
+        <div class="history-drink">${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
         <div class="history-opts">${[...toArr(i.opts), ...(toArr(i.toppings).length ? ['加：'+toArr(i.toppings).join('、')] : [])].join(' · ')}</div>
       `).join('');
       div.innerHTML = `
@@ -899,7 +999,7 @@ function renderGroupOrders() {
       html += `
         <div class="group-item">
           <div class="group-item-info">
-            <div class="group-item-name">${item.emoji} ${item.name} × ${item.qty}</div>
+            <div class="group-item-name">${item.name} × ${item.qty}</div>
             <div class="group-item-opts">${detail}</div>
           </div>
           <span class="group-item-price">$${item.totalPrice}</span>
@@ -1028,13 +1128,21 @@ async function initLiff() {
     if (!liff.isLoggedIn()) { liff.login(); return; }
     isInLiff = liff.isInClient();
     lineProfile = await liff.getProfile();
-    document.getElementById('lineUserName').textContent = lineProfile.displayName;
+    document.getElementById('lineUserName').textContent = `· ${lineProfile.displayName} ·`;
     nameRow.style.display = 'none';
   } catch (e) {
     console.warn('LIFF 初始化失敗，改為瀏覽器模式', e);
     nameRow.style.display = 'flex';
   }
 }
+
+// ===== Sticky Bar =====
+document.getElementById('stickyCheckout').addEventListener('click', () => {
+  openCart();
+});
+document.getElementById('stickyCartIcon').addEventListener('click', () => {
+  openCart();
+});
 
 // ===== 啟動 =====
 buildMenu();

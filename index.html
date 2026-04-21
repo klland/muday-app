@@ -15,42 +15,29 @@
   <header class="header">
     <div class="header-inner">
       <div class="logo">
-        <div class="logo-icon">
-          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="17" cy="17" r="7" fill="#c8845a"/>
-            <line x1="17" y1="3" x2="17" y2="7" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="17" y1="27" x2="17" y2="31" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="3" y1="17" x2="7" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="27" y1="17" x2="31" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="7.05" y1="7.05" x2="9.88" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="24.12" y1="24.12" x2="26.95" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="26.95" y1="7.05" x2="24.12" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="9.88" y1="24.12" x2="7.05" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+        <div class="logo-top">
+          <div class="logo-icon">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="13" cy="13" r="4.5" fill="#2d2418"/>
+              <line x1="13" y1="2" x2="13" y2="5.5" stroke="#2d2418" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="13" y1="20.5" x2="13" y2="24" stroke="#2d2418" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="2" y1="13" x2="5.5" y2="13" stroke="#2d2418" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="20.5" y1="13" x2="24" y2="13" stroke="#2d2418" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="5.4" y1="5.4" x2="7.6" y2="7.6" stroke="#2d2418" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="18.4" y1="18.4" x2="20.6" y2="20.6" stroke="#2d2418" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="20.6" y1="5.4" x2="18.4" y2="7.6" stroke="#2d2418" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="7.6" y1="18.4" x2="5.4" y2="20.6" stroke="#2d2418" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="logo-text">一 沐 日</span>
         </div>
-        <div class="logo-text-wrap">
-          <span class="logo-text">一沐日</span>
-          <span class="logo-sub" id="lineUserName"></span>
-        </div>
+        <div class="logo-tagline" id="lineUserName">TEA MENU · NO. 04</div>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" id="historyBtn" title="歷史訂單">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/>
-          </svg>
-        </button>
-        <button class="icon-btn" id="groupBtn" title="今日團購">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="2.2"/>
-            <path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 13c2.2 0 4 1.8 4 4"/>
-          </svg>
-        </button>
+        <button class="icon-btn" id="historyBtn" title="歷史訂單">史</button>
+        <button class="icon-btn" id="groupBtn" title="今日團購">眾</button>
         <button class="cart-btn" id="cartBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 01-8 0"/>
-          </svg>
+          篩
           <span class="cart-badge" id="cartBadge">0</span>
         </button>
       </div>
@@ -62,6 +49,19 @@
     <nav class="category-nav" id="categoryNav"></nav>
     <section class="menu-section" id="menuSection"></section>
   </main>
+
+  <!-- 底部 Sticky 結帳列 -->
+  <div class="sticky-bar" id="stickyBar">
+    <div class="sticky-icon" id="stickyCartIcon">
+      篩
+      <span class="sticky-icon-badge" id="stickyBadge">0</span>
+    </div>
+    <div class="sticky-info">
+      <div class="sticky-cups" id="stickyCups">0 杯</div>
+      <div class="sticky-total"><span class="nt">NT$</span><span id="stickyTotal">0</span></div>
+    </div>
+    <button class="sticky-checkout" id="stickyCheckout">結帳</button>
+  </div>
 
   <!-- 購物車側板 -->
   <aside class="cart-panel" id="cartPanel">
@@ -81,7 +81,7 @@
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div class="cart-total">
         <span>合計</span>
-        <span id="cartTotal">$0</span>
+        <span id="cartTotal">0</span>
       </div>
       <button class="checkout-btn" id="checkoutBtn">送出訂單</button>
     </div>
@@ -133,8 +133,8 @@
           <label>加好料 <small>（可複選）</small></label>
           <div class="option-row" id="toppingOptions"></div>
         </div>
-        <div class="fixed-note" id="hotPowderNote" style="display:none;background:#fff3e0;border-color:#ffb74d;color:#e65100">
-          ⚠️ 粉粿遇熱會融化，請確認是否仍要加料
+        <div class="fixed-note" id="hotPowderNote" style="display:none;border-color:#b45309;color:#b45309">
+          注意：粉粿遇熱會融化，請確認是否仍要加料
         </div>
         <div class="qty-group">
           <button class="qty-btn" id="qtyMinus">－</button>
@@ -155,11 +155,11 @@
   <!-- 送出成功 Modal -->
   <div class="modal" id="successModal">
     <div class="modal-card success-card">
-      <div class="success-icon">🎉</div>
-      <h3>訂單已送出！</h3>
+      <div class="success-icon">已送</div>
+      <h3>訂單已送出</h3>
       <p class="success-name" id="successName"></p>
       <div class="success-items" id="successItems"></div>
-      <p class="success-sub">等大家都點完<br>請按 👥 匯總後傳到 LINE</p>
+      <p class="success-sub">等大家都點完<br>請按「眾」匯總後傳到 LINE</p>
       <button class="add-btn" id="closeSuccess" style="margin-top:16px;width:100%">繼續點餐</button>
     </div>
   </div>
@@ -168,7 +168,7 @@
   <div class="modal" id="historyModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📋 歷史訂單</h3>
+        <h3>歷史訂單</h3>
         <button class="close-btn" id="closeHistory">✕</button>
       </div>
       <div class="modal-body" id="historyBody"></div>
@@ -179,11 +179,11 @@
   <div class="modal" id="groupModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>👥 今日團購匯總</h3>
+        <h3>今日團購匯總</h3>
         <button class="close-btn" id="closeGroup">✕</button>
       </div>
       <div class="modal-body" id="groupBody">
-        <p style="text-align:center;color:#888;padding:20px"></p>
+        <p style="text-align:center;color:#8f7d5f;padding:20px"></p>
       </div>
       <div class="modal-footer">
         <button class="add-btn" id="sendGroupBtn" style="width:100%">傳送匯總到 LINE</button>
@@ -195,11 +195,11 @@
   <div class="modal" id="copyModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📋 匯總文字</h3>
+        <h3>匯總文字</h3>
         <button class="close-btn" id="closeCopyModal">✕</button>
       </div>
       <div class="modal-body">
-        <textarea id="copyText" readonly style="width:100%;height:200px;font-size:14px;line-height:1.6;border:1px solid #ddd;border-radius:8px;padding:10px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+        <textarea id="copyText" readonly></textarea>
       </div>
       <div class="modal-footer">
         <button class="add-btn" id="doCopyBtn" style="width:100%">複製 → 貼到 LINE</button>
@@ -208,6 +208,6 @@
   </div>
 
   <div id="toast-container"></div>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

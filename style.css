@@ -73,50 +73,59 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .logo-icon svg circle[fill] { fill: var(--ink); }
 .logo-icon svg line { stroke: var(--ink); }
 
-.logo-text-wrap { display: flex; flex-direction: column; line-height: 1.15; }
+.logo-text-wrap { display: flex; flex-direction: column; line-height: 1.2; }
 .logo-text {
   font-family: var(--font-zh);
   font-weight: 400;
-  font-size: 19px;
-  letter-spacing: 8px;
+  font-size: 28px;
+  letter-spacing: 12px;
   color: var(--ink);
-  padding-left: 2px;
+  padding-left: 3px;
+}
+.logo-sub-line {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 2px;
+}
+.logo-rule {
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+.logo-menu-en {
+  font-family: var(--font-en);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
 }
 .logo-sub {
   font-family: var(--font-en);
   font-style: italic;
-  font-size: 11px;
-  letter-spacing: 2.5px;
+  font-size: 10px;
+  letter-spacing: 2px;
   color: var(--accent);
+  margin-top: 1px;
 }
 .logo-sub::before { content: "· "; }
 .logo-sub:empty { display: none; }
-.logo-sub:empty::before { content: ""; }
-/* When empty, show brand latin */
-.logo-text-wrap::after {
-  content: "Mò Yùn · Tea Book";
-  font-family: var(--font-en);
-  font-style: italic;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--ink-soft);
-}
-.logo-sub:not(:empty) + .logo-text-wrap::after { display: none; }
-.logo-text-wrap:has(.logo-sub:not(:empty))::after { display: none; }
 
 .header-actions { display: flex; align-items: center; gap: var(--sp-sm); }
 .icon-btn, .cart-btn {
-  width: 38px; height: 38px;
+  width: 44px; height: 44px;
   border: 1px solid var(--ink);
   display: flex; align-items: center; justify-content: center;
   background: transparent;
   color: var(--ink);
+  font-family: var(--font-zh);
+  font-size: 15px;
+  letter-spacing: 0;
   transition: background 0.15s, color 0.15s;
   position: relative;
 }
 .icon-btn:hover, .cart-btn:hover { background: var(--ink); color: var(--paper); }
 .icon-btn svg, .cart-btn svg { width: 18px; height: 18px; stroke: currentColor; }
-.cart-btn { background: var(--ink); color: var(--paper); }
+.cart-btn { background: var(--ink); color: var(--paper); font-size: 16px; }
 .cart-btn:hover { background: var(--accent); }
 
 .cart-badge {
@@ -161,47 +170,84 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 
 .cat-btn {
   flex-shrink: 0;
-  padding: 8px 14px;
+  padding: 10px 14px 8px;
   background: transparent;
   border: 1px solid var(--rule);
+  border-bottom: 2px solid transparent;
   color: var(--ink-soft);
   font-family: var(--font-zh);
-  font-size: 12.5px;
-  letter-spacing: 2.5px;
+  font-size: 13px;
+  letter-spacing: 3px;
   font-weight: 400;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
   transition: all 0.12s;
 }
 .cat-btn:hover { border-color: var(--ink); color: var(--ink); }
 .cat-btn.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule);
+  border-bottom-color: var(--accent);
 }
+.cat-en {
+  display: block;
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  font-weight: 400;
+}
+.cat-btn:not(.active) .cat-en { color: var(--dim); }
 
 /* ---------- Section header ---------- */
 .category-title {
-  display: flex; align-items: baseline; gap: 12px;
+  display: flex; align-items: flex-end; justify-content: space-between;
   margin: var(--sp-xl) 0 var(--sp-md);
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: var(--rule-w) solid var(--rule);
+  position: relative;
 }
 .category-title:first-child { margin-top: 0; }
+/* diamond decoration on border */
+.category-title::after {
+  content: "◆";
+  position: absolute;
+  bottom: -6px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 7px;
+  color: var(--ink);
+  background: var(--bg);
+  padding: 0 4px;
+  line-height: 1;
+}
+.category-title-left {
+  display: flex; flex-direction: column; gap: 4px;
+}
 .series-name {
   font-family: var(--font-en);
   font-style: italic;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 3px;
   color: var(--accent);
-  text-transform: lowercase;
 }
 .series-name::before { content: "· "; }
 .series-name::after  { content: " ·"; }
 .cat-name {
   font-family: var(--font-zh);
-  font-size: 16px;
-  letter-spacing: 5px;
+  font-size: 22px;
+  letter-spacing: 10px;
   font-weight: 400;
   color: var(--ink);
+  padding-left: 2px;
+}
+.cat-count {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  margin-bottom: 2px;
 }
 
 /* ---------- Menu grid ---------- */
@@ -219,56 +265,70 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   position: relative;
   background: var(--paper);
   border: var(--rule-w) solid var(--rule);
-  padding: var(--sp-md) 10px var(--sp-sm);
+  padding: 0 0 var(--sp-sm);
   display: flex; flex-direction: column;
   transition: border-color 0.15s, transform 0.12s;
   overflow: hidden;
 }
-.drink-card:hover {
-  border-color: var(--ink);
-}
+.drink-card:hover { border-color: var(--ink); }
 .drink-card:active { transform: translateY(1px); }
 
-/* small latin catalog code in top-left */
-.drink-card::before {
-  content: "";
-  position: absolute; top: 6px; left: 8px;
-  width: 10px; height: 1px;
+/* badge stamp (經典, 特調, 人氣) — top-right corner */
+.drink-badge {
+  position: absolute;
+  top: 0; right: 0;
   background: var(--accent);
-  opacity: 0.8;
+  color: var(--paper);
+  font-family: var(--font-zh);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 3px 7px;
+  z-index: 4;
+}
+
+/* catalog code — centred above cup */
+.drink-code {
+  text-align: center;
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  padding: 8px 0 0;
 }
 
 /* cup illustration area */
 .drink-img {
   position: relative;
-  height: 96px;
+  height: 120px;
   background: var(--paper-2);
   border-bottom: var(--rule-w) solid var(--rule-soft);
-  margin: 4px -10px var(--sp-sm);
+  margin: 6px 0 0;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
 /* ---------- Two-tone cup ---------- */
 .drink-cup {
   position: relative;
-  width: 54px;
+  width: 66px;
   display: flex; flex-direction: column; align-items: center;
+  margin-top: 16px;
 }
 
 /* straw */
 .cup-straw {
   position: absolute;
-  top: -10px; left: 50%;
-  width: 3px; height: 24px;
+  top: -14px; left: 50%;
+  width: 3px; height: 28px;
   background: var(--ink);
-  transform: translateX(4px) rotate(8deg);
+  transform: translateX(5px) rotate(8deg);
   transform-origin: bottom center;
   z-index: 3;
 }
 
 /* lid: flat rectangle + ellipse top */
 .cup-lid {
-  width: 54px; height: 10px;
+  width: 66px; height: 11px;
   background: var(--paper);
   border: 1px solid var(--ink);
   position: relative;
@@ -277,8 +337,8 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .cup-lid::before {
   content: "";
   position: absolute;
-  top: -5px; left: -4px; right: -4px;
-  height: 10px;
+  top: -6px; left: -5px; right: -5px;
+  height: 12px;
   background: var(--paper);
   border: 1px solid var(--ink);
   border-radius: 50%;
@@ -286,8 +346,8 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 
 /* cup body wrapper: trapezoid clip */
 .cup-body {
-  width: 50px;
-  height: 56px;
+  width: 62px;
+  height: 68px;
   position: relative;
   border: 1px solid var(--ink);
   clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
@@ -352,14 +412,28 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .fav-btn.active { color: var(--accent); }
 
 /* card body */
-.drink-info { display: flex; flex-direction: column; gap: 6px; padding: 2px 0 0; }
+.drink-info { display: flex; flex-direction: column; gap: 5px; padding: 8px 10px 2px; }
 .drink-name {
   font-family: var(--font-zh);
-  font-size: 13.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 400;
   letter-spacing: 1.5px;
   color: var(--ink);
   line-height: 1.35;
+}
+.drink-name-en {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  line-height: 1.2;
+}
+.drink-divider {
+  width: 20px;
+  height: 1px;
+  background: var(--rule);
+  margin: 2px 0;
 }
 
 .drink-tags { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -386,20 +460,16 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   letter-spacing: 0.5px;
   color: var(--ink-soft);
 }
-.meta-kcal::before { content: "· "; }
 .meta-caff {
-  font-family: var(--font-zh);
-  font-style: normal;
-  font-size: 9.5px;
-  letter-spacing: 1px;
-  padding: 1px 5px;
-  border: 1px solid currentColor;
-  background: transparent;
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
-.caff-none { color: var(--dim); }
-.caff-low  { color: #8a6a10; }
-.caff-mid  { color: #b45309; }
-.caff-high { color: var(--accent); }
+.caff-none { background: var(--dim); }
+.caff-low  { background: #8a6a10; }
+.caff-mid  { background: #b45309; }
+.caff-high { background: var(--accent); }
 
 .drink-footer {
   display: flex; align-items: flex-end; justify-content: space-between;
@@ -409,18 +479,19 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 .drink-price {
   font-family: var(--font-en);
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 500;
   color: var(--ink);
   letter-spacing: 0.5px;
+  line-height: 1;
 }
-.drink-price::before {
-  content: "NT$";
-  font-size: 9px;
+.drink-price .nt {
+  font-size: 10px;
   letter-spacing: 1.5px;
-  margin-right: 3px;
   color: var(--ink-soft);
-  vertical-align: 2px;
+  margin-right: 2px;
+  vertical-align: 3px;
+  font-weight: 400;
 }
 .add-icon {
   width: 24px; height: 24px;

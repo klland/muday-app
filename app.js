@@ -1143,7 +1143,7 @@ function renderGroupOrders() {
   });
 
   body.innerHTML = html;
-  totalEl.textContent = `NT$ ${totalPrice}`;
+  if (totalEl) totalEl.textContent = `NT$ ${totalPrice}`;
 
   // 刪除按鈕：真正從 Firebase 刪除
   body.querySelectorAll('.group-del-btn').forEach(btn => {

@@ -1156,10 +1156,33 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 .group-stat-val.accent { color: var(--accent); font-size: 18px; }
 
+/* 副標題輸入列 */
+.group-subtitle-row {
+  padding: 8px var(--sp-lg);
+  border-bottom: var(--rule-w) solid var(--rule);
+  background: var(--paper-2);
+}
+.group-subtitle-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule-soft);
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  padding: 4px 0;
+  outline: none;
+}
+.group-subtitle-input::placeholder { color: var(--dim); font-style: italic; }
+.group-subtitle-input:focus { border-bottom-color: var(--accent); }
+
 /* 每人方格 */
 .group-person {
   background: var(--paper);
   border: var(--rule-w) solid var(--rule);
+  border-left: 3px solid var(--accent);
   margin: 0 var(--sp-lg) var(--sp-md);
   overflow: hidden;
 }
@@ -1270,7 +1293,7 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .group-footer-total {
   font-family: var(--font-en);
   font-size: 22px;
-  color: var(--ink);
+  color: var(--accent);
   letter-spacing: 0.5px;
 }
 .group-send-btn {

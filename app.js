@@ -1183,7 +1183,8 @@ function buildGroupText() {
   const activeOrders = groupOrders.filter(o => o.items.length > 0);
   const d       = new Date();
   const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
-  const lines   = [`👥 一沐日｜${dateStr} 團購匯總`, `─────────────`];
+  const subtitle = (document.getElementById('groupSubtitle')?.value || '').trim();
+  const lines   = [`☀️ 一沐日｜${dateStr} 眾人茶單`, subtitle ? subtitle : '', `─────────────`].filter(Boolean);
 
   activeOrders.forEach(order => {
     lines.push(`【${order.name}】`);

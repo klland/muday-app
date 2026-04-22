@@ -828,18 +828,18 @@ async function fetchHistory() {
 
 async function renderCart() {
   if (cart.length === 0) {
-    const history = await fetchHistory();
-    let html = '<p class="cart-empty">購物車是空的</p>';
-    if (history.length > 0) {
-      html += '<button class="reorder-btn" id="reorderBtn">🔄 重點上次訂單</button>';
-    }
-    cartBody.innerHTML = html;
-    if (history.length > 0) {
-      document.getElementById('reorderBtn').addEventListener('click', async () => {
-        await reorderLast();
-        await renderCart();
-      });
-    }
+    cartBody.innerHTML = `
+      <div class="cart-empty-block">
+        <div class="cart-empty-kanji">空</div>
+        <div class="cart-empty-zh">茶籃尚未有茶</div>
+        <div class="cart-empty-en">your basket is empty</div>
+        <button class="cart-pick-btn" id="cartPickBtn">選一杯茶 →</button>
+      </div>`;
+    document.getElementById('cartPickBtn').addEventListener('click', () => {
+      cartPanel.classList.remove('open');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    });
     cartFooter.style.display = 'none';
     return;
   }

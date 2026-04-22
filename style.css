@@ -492,14 +492,15 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 
 .close-btn {
   width: 32px; height: 32px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--accent);
+  color: var(--accent) !important;
   color: var(--ink);
   background: transparent;
   font-size: 13px;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.12s;
 }
-.close-btn:hover { background: var(--ink); color: var(--paper); }
+.close-btn:hover { background: var(--accent); color: var(--paper) !important; }
 
 .name-row {
   padding: var(--sp-md) var(--sp-lg);
@@ -1059,6 +1060,7 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .history-header {
   display: flex; justify-content: space-between; align-items: flex-start;
   padding: 10px 12px 8px;
+  background: var(--paper-2);
   border-bottom: 1px dashed var(--rule-soft);
 }
 .history-header-left {
@@ -1122,22 +1124,20 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 
 .history-actions {
-  display: flex; gap: 0;
   border-top: var(--rule-w) solid var(--rule);
+  background: var(--paper-2);
 }
 .history-btn {
-  flex: 1;
+  display: block; width: 100%;
   padding: 10px;
   font-family: var(--font-zh);
   font-size: 12px;
   letter-spacing: 2px;
   color: var(--ink-soft);
   border: none;
-  border-right: var(--rule-w) solid var(--rule);
   background: transparent;
   transition: background 0.12s, color 0.12s;
 }
-.history-btn:last-child { border-right: none; }
 .history-btn:hover { background: var(--ink); color: var(--paper); }
 
 /* ---------- Group Modal (眾人茶單) ---------- */

@@ -1028,7 +1028,6 @@ historyBtn.addEventListener('click', async () => {
         <div class="history-items">${itemsHtml}</div>
         <div class="history-actions">
           <button class="history-btn history-reorder" data-idx="${idx}">再來一單</button>
-          <button class="history-btn history-detail" data-idx="${idx}">查看詳情</button>
         </div>
       `;
       body.appendChild(div);
@@ -1046,16 +1045,6 @@ historyBtn.addEventListener('click', async () => {
       });
     });
 
-    body.querySelectorAll('.history-detail').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const order = historyCache[Number(btn.dataset.idx)];
-        const detailHtml = order.items.map(i => `
-          <div class="history-drink">${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
-          <div class="history-opts">${[...toArr(i.opts), ...(toArr(i.toppings).length ? ['加：'+toArr(i.toppings).join('、')] : [])].join(' · ')}</div>
-        `).join('');
-        alert(`${order.name}・${formatDate(order.timestamp)}\n合計 $${order.total}\n\n${order.items.map(i => `${i.name} × ${i.qty} $${i.totalPrice}`).join('\n')}`);
-      });
-    });
   } catch(e) {
     body.innerHTML = `<p style="text-align:center;color:#c0392b;padding:30px">載入失敗：${e.message}</p>`;
   }

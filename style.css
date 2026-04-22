@@ -456,6 +456,73 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 
 /* ========================================================================
+   STICKY BAR
+   ======================================================================== */
+#stickyBar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 80;
+  background: var(--ink);
+  color: var(--paper);
+  height: 56px;
+  align-items: center;
+  padding: 0 var(--sp-md);
+  gap: var(--sp-sm);
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+#stickyBar.show { display: flex; }
+
+.sticky-icon {
+  position: relative;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-zh); font-size: 14px;
+  flex-shrink: 0; cursor: pointer;
+}
+.sticky-icon-badge {
+  position: absolute; top: -6px; right: -6px;
+  min-width: 16px; height: 16px;
+  background: var(--accent);
+  color: var(--paper);
+  border: 1px solid var(--paper);
+  font-family: var(--font-en); font-size: 10px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
+}
+.sticky-info {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 1px;
+  padding-left: var(--sp-sm);
+}
+.sticky-cups {
+  font-family: var(--font-en); font-size: 11px;
+  color: rgba(255,255,255,0.6); letter-spacing: 0.04em;
+}
+.sticky-total {
+  font-family: var(--font-en); font-size: 15px; font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.sticky-total .nt {
+  font-size: 10px; letter-spacing: 0.08em; margin-right: 2px;
+  opacity: 0.7;
+}
+.sticky-checkout {
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  padding: 0 var(--sp-md);
+  height: 36px;
+  font-family: var(--font-zh); font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.sticky-checkout:hover { background: var(--accent-dk); }
+
+/* ========================================================================
    CART PANEL
    ======================================================================== */
 .overlay {

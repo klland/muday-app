@@ -866,9 +866,10 @@ async function renderCart() {
     const div = document.createElement('div');
     div.className = 'cart-item';
     const detail = [...item.opts, ...(item.toppings.length ? ['加：' + item.toppings.join('、')] : [])].join(' · ');
-    const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+    const drinkId = item.drinkId || item.id;
+    const cat = MENU.find(c => c.items.some(i => i.id === drinkId));
     const prefix = cat ? (SERIES_PREFIX[cat.series] || 'X') : 'X';
-    const idx = cat ? cat.items.findIndex(i => i.id === item.id) + 1 : 0;
+    const idx = cat ? cat.items.findIndex(i => i.id === drinkId) + 1 : 0;
     const code = `${prefix}·${String(idx).padStart(2, '0')}`;
     const itemTheme = item.theme || (cat && cat.theme) || 'brown';
     div.innerHTML = `

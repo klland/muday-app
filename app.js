@@ -1077,23 +1077,28 @@ groupModal.addEventListener('click', e => {
 
 function renderGroupOrders() {
   const body    = document.getElementById('groupBody');
-  const sendBtn = document.getElementById('sendGroupBtn');
+  const footer  = document.getElementById('groupFooter');
+  const summaryEl = document.getElementById('groupFooterSummary');
 
-  // 過濾掉沒有品項的訂單
   const activeOrders = groupOrders.filter(o => o.items.length > 0);
 
   if (activeOrders.length === 0) {
     body.innerHTML = '<p class="empty-hint">今天還沒有人點餐</p>';
-    sendBtn.style.display = 'none';
+    footer.style.display = 'none';
     return;
   }
 
-  sendBtn.style.display = '';
+  footer.style.display = '';
   let totalCups = 0, totalPrice = 0;
 
   let html = '';
   activeOrders.forEach(order => {
-    html += `<div class="group-person"><div class="group-person-name">【${order.name}】</div>`;
+    const orderTotal = order.items.reduce((s, i) => s + i.totalPrice, 0);
+    html += `<div class="group-person">
+      <div class="group-person-header">
+        <span class="group-person-name">${order.name || '匿名'}</span>
+        <span class="group-person-subtotal">NT$ ${orderTotal}</span>
+      </div>`;
     order.items.forEach(item => {
       totalCups  += item.qty;
       totalPrice += item.totalPrice;
@@ -1101,18 +1106,18 @@ function renderGroupOrders() {
       html += `
         <div class="group-item">
           <div class="group-item-info">
-            <div class="group-item-name">${item.name} × ${item.qty}</div>
+            <div class="group-item-name">${item.name} <span class="group-item-qty">× ${item.qty}</span></div>
             <div class="group-item-opts">${detail}</div>
           </div>
-          <span class="group-item-price">$${item.totalPrice}</span>
+          <span class="group-item-price">NT$ ${item.totalPrice}</span>
           <button class="group-del-btn" data-fbkey="${order._fbKey}" data-idx="${item._itemIdx}">✕</button>
         </div>`;
     });
     html += `</div>`;
   });
 
-  html += `<div class="group-summary">共 ${activeOrders.length} 人・${totalCups} 杯・合計 $${totalPrice}</div>`;
   body.innerHTML = html;
+  summaryEl.textContent = `共 ${activeOrders.length} 人・${totalCups} 杯・合計 NT$ ${totalPrice}`;
 
   // 刪除按鈕：真正從 Firebase 刪除
   body.querySelectorAll('.group-del-btn').forEach(btn => {

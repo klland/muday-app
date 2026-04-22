@@ -796,6 +796,23 @@ function updateCartBadge() {
   updateStickyBar();
 }
 
+async function updateGroupBadge() {
+  try {
+    const snap = await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).get();
+    const badge = document.getElementById('groupBadge');
+    if (!badge) return;
+    if (!snap.exists()) { badge.style.display = 'none'; return; }
+    const orders = Object.values(snap.val());
+    const cups = orders.reduce((s, o) => s + (toArr(o.items).reduce((ss, i) => ss + (i.qty || 1), 0)), 0);
+    if (cups > 0) {
+      badge.textContent = cups;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) { /* ignore */ }
+}
+
 function updateStickyBar() {
   const stickyBar = document.getElementById('stickyBar');
   const n = cart.reduce((s, i) => s + i.qty, 0);
@@ -948,6 +965,7 @@ checkoutBtn.addEventListener('click', async () => {
   cart = [];
   saveCart();
   updateCartBadge();
+  updateGroupBadge();
   closeCartPanel();
   successModal.classList.add('open');
 });
@@ -1292,4 +1310,5 @@ document.getElementById('stickyCartIcon').addEventListener('click', () => {
 // ===== 啟動 =====
 buildMenu();
 updateCartBadge();
+updateGroupBadge();
 initLiff();

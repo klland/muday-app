@@ -780,15 +780,27 @@ async function renderCart() {
     const div = document.createElement('div');
     div.className = 'cart-item';
     const detail = [...item.opts, ...(item.toppings.length ? ['加：' + item.toppings.join('、')] : [])].join(' · ');
+    const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+    const prefix = cat ? (SERIES_PREFIX[cat.series] || 'X') : 'X';
+    const idx = cat ? cat.items.findIndex(i => i.id === item.id) + 1 : 0;
+    const code = `${prefix}·${String(idx).padStart(2, '0')}`;
     div.innerHTML = `
-      <div class="cart-item-icon">${item.name.slice(0, 2)}</div>
+      <div class="cart-item-cup">
+        ${cupSvg(item.theme || 'brown')}
+      </div>
       <div class="cart-item-info">
-        <div class="cart-item-name">${item.name} × ${item.qty}</div>
+        <div class="cart-item-code">${code}</div>
+        <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-opts">${detail}</div>
+        <div class="cart-item-qty">
+          <button class="qty-sm-btn" data-id="${item.id}" data-delta="-1">－</button>
+          <span class="qty-sm-val">${item.qty}</span>
+          <button class="qty-sm-btn" data-id="${item.id}" data-delta="1">＋</button>
+        </div>
       </div>
       <div class="cart-item-right">
-        <span class="cart-item-price">$${item.totalPrice}</span>
         <button class="remove-btn" data-id="${item.id}">✕</button>
+        <span class="cart-item-price">${item.totalPrice}</span>
       </div>`;
     cartBody.appendChild(div);
   });
@@ -800,6 +812,22 @@ async function renderCart() {
       renderCart();
     });
   });
+  cartBody.querySelectorAll('.qty-sm-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      const delta = Number(btn.dataset.delta);
+      const idx = cart.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+      cart[idx].totalPrice = cart[idx].unitPrice * cart[idx].qty;
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    });
+  });
+  // update header item count
+  const countEl = document.getElementById('cartHeaderCount');
+  if (countEl) countEl.textContent = `· ${cart.reduce((s,i)=>s+i.qty,0)} items`;
   cartTotalEl.textContent = cart.reduce((s, i) => s + i.totalPrice, 0);
   cartFooter.style.display = 'block';
 }

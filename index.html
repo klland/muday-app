@@ -67,12 +67,15 @@
   <!-- 購物車側板 -->
   <aside class="cart-panel" id="cartPanel">
     <div class="cart-header">
-      <h2>我的訂單</h2>
+      <div class="cart-header-text">
+        <div class="cart-header-en">· your basket ·</div>
+        <h2>茶籃 <span class="cart-header-count" id="cartHeaderCount">· 0 items</span></h2>
+      </div>
       <button class="close-btn" id="closeCart">✕</button>
     </div>
 
     <div class="name-row" id="nameRow">
-      <label for="nameInput">你的名字</label>
+      <label for="nameInput">姓名</label>
       <input type="text" id="nameInput" placeholder="輸入名字，方便對單" maxlength="10" />
     </div>
 
@@ -81,10 +84,17 @@
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div class="cart-total">
-        <span>合計</span>
+        <div class="cart-total-label-wrap">
+          <span class="cart-total-zh">合計</span>
+          <span class="cart-total-sub">· subtotal</span>
+        </div>
         <span id="cartTotal">0</span>
       </div>
-      <button class="checkout-btn" id="checkoutBtn">送出訂單</button>
+      <button class="checkout-btn" id="checkoutBtn">
+        <span class="checkout-en">— place order —</span>
+        <span class="checkout-zh">送出訂單</span>
+        <span class="checkout-arrow">→</span>
+      </button>
     </div>
   </aside>
   <div class="overlay" id="overlay"></div>

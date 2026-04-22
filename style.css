@@ -305,84 +305,7 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-/* ---------- Two-tone cup ---------- */
-.drink-cup {
-  position: relative;
-  width: 66px;
-  display: flex; flex-direction: column; align-items: center;
-  margin-top: 16px;
-}
-
-/* straw */
-.cup-straw {
-  position: absolute;
-  top: -14px; left: 50%;
-  width: 3px; height: 28px;
-  background: var(--ink);
-  transform: translateX(5px) rotate(8deg);
-  transform-origin: bottom center;
-  z-index: 3;
-}
-
-/* lid: flat rectangle + ellipse top */
-.cup-lid {
-  width: 66px; height: 11px;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  position: relative;
-  z-index: 2;
-}
-.cup-lid::before {
-  content: "";
-  position: absolute;
-  top: -6px; left: -5px; right: -5px;
-  height: 12px;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-}
-
-/* cup body wrapper: trapezoid clip */
-.cup-body {
-  width: 62px;
-  height: 68px;
-  position: relative;
-  border: 1px solid var(--ink);
-  clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
-  overflow: hidden;
-  margin-top: -1px;
-}
-
-/* top layer (foam / light) — 35% of body */
-.cup-top-layer {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 35%;
-  background: var(--cup-light);
-}
-/* top/bottom layer divider line */
-.cup-top-layer::after {
-  content: "";
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: rgba(45,36,24,0.18);
-}
-
-/* bottom layer (main drink) — remaining 65% */
-.cup-bot-layer {
-  position: absolute;
-  top: 35%; left: 0; right: 0; bottom: 0;
-  background: var(--cup-dark);
-}
-
-/* theme color pairs: --cup-light (foam) / --cup-dark (body) */
-.drink-cup.theme-green  { --cup-light: #b8cfa4; --cup-dark: #6b8a5c; }
-.drink-cup.theme-pink   { --cup-light: #dba899; --cup-dark: #b86a55; }
-.drink-cup.theme-brown  { --cup-light: #c49a72; --cup-dark: #8a5a38; }
-.drink-cup.theme-gold   { --cup-light: #d9b96a; --cup-dark: #b08438; }
-.drink-cup.theme-blue   { --cup-light: #90b8aa; --cup-dark: #4a7560; }
-.drink-cup.theme-teal   { --cup-light: #85adb8; --cup-dark: #4a6b78; }
+/* InkCup SVG is inline — no CSS cup needed */
 
 .drink-en {
   position: absolute;
@@ -640,18 +563,14 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 /* mini cup thumbnail */
 .cart-item-cup {
   flex-shrink: 0;
-  width: 56px; height: 68px;
+  width: 56px; height: 70px;
   background: var(--paper);
   border: 1px solid var(--rule);
   display: flex; align-items: center; justify-content: center;
   position: relative;
   overflow: hidden;
 }
-.cart-item-cup .drink-cup {
-  transform: scale(0.72);
-  transform-origin: center bottom;
-  margin-top: 10px;
-}
+.cart-item-cup svg { display: block; }
 
 .cart-item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .cart-item-code {

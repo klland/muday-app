@@ -28,28 +28,30 @@ const THEME_EN = {
   gold: 'Cheese Cap', blue: 'Fresh Milk', teal: 'Winter Melon',
 };
 
-// 每個 theme 的杯子填色
-const THEME_CUP_COLOR = {
-  green: '#8a9a6a', pink: '#b87060', brown: '#8a5a38',
-  gold:  '#b08438', blue: '#4a7080', teal:  '#4a7060',
+// 杯子液體色（主色）
+const THEME_LIQUID = {
+  green: '#d4d6a8', pink: '#d89488', brown: '#a87a50',
+  gold:  '#c9a85e', blue:  '#d8cfa8', teal:  '#b08a55',
+};
+// 杯子頂層色（較深，底部 topping band）
+const THEME_TOP = {
+  green: '#b8bc83', pink: '#b26e60', brown: '#6e4a28',
+  gold:  '#a88540', blue:  '#a68860', teal:  '#8a6838',
 };
 
-// 每個 theme 的杯子底色（較深）
-const THEME_CUP_DARK = {
-  green: '#6a7a52', pink: '#9a5848', brown: '#6a3a20',
-  gold:  '#906428', blue: '#2a5060', teal:  '#2a5040',
-};
-
-// CSS 雙色杯子，依 theme class 帶色
+// InkCup 手繪風 SVG 杯子
 function cupSvg(theme) {
-  return `<div class="drink-cup theme-${theme || 'brown'}">
-    <div class="cup-straw"></div>
-    <div class="cup-lid"></div>
-    <div class="cup-body">
-      <div class="cup-top-layer"></div>
-      <div class="cup-bot-layer"></div>
-    </div>
-  </div>`;
+  const liquid = THEME_LIQUID[theme] || '#a87a50';
+  const top    = THEME_TOP[theme]    || '#6e4a28';
+  const stroke = '#2d2418';
+  return `<svg width="56" height="70" viewBox="0 0 60 75" style="display:block">
+    <path d="M11 20 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L49 20 Z" fill="${liquid}" opacity="0.85"/>
+    <path d="M14 50 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L46 50 Z" fill="${top}" opacity="0.7"/>
+    <path d="M11 20 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L49 20" fill="none" stroke="${stroke}" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M8 20 Q8 14 30 13 Q52 14 52 20 Z" fill="#f7f1e4" stroke="${stroke}" stroke-width="1.1"/>
+    <line x1="33" y1="13" x2="36" y2="4" stroke="${stroke}" stroke-width="1.4" stroke-linecap="round"/>
+    <line x1="10" y1="22" x2="50" y2="22" stroke="${stroke}" stroke-width="0.5" opacity="0.5"/>
+  </svg>`;
 }
 
 // 每個 series 的流水編號前綴

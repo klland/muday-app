@@ -128,15 +128,16 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .cart-btn { background: var(--accent); color: var(--paper); font-size: 16px; }
 .cart-btn:hover { background: var(--accent-dk); }
 
-/* 眾按鈕：咖啡色文字 */
-#groupBtn { color: #8a5a38; border-color: #8a5a38; }
-#groupBtn:hover { background: #8a5a38; color: var(--paper); }
+/* 眾按鈕：咖啡色，永遠保持 */
+#groupBtn { color: #8a5a38; border-color: #8a5a38; background: var(--paper); }
+#groupBtn:hover { background: #8a5a38; color: var(--paper); border-color: #8a5a38; }
 
 .group-badge {
   position: absolute; top: -7px; right: -7px;
   min-width: 18px; height: 18px;
   background: #8a5a38;
   color: var(--paper);
+  border: 1px solid var(--paper);
   font-family: var(--font-en);
   font-size: 11px;
   font-weight: 500;
@@ -150,6 +151,7 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   min-width: 18px; height: 18px;
   background: var(--accent);
   color: var(--paper);
+  border: 1px solid var(--paper);
   font-family: var(--font-en);
   font-size: 11px;
   font-weight: 500;

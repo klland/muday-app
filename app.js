@@ -382,11 +382,12 @@ function createDrinkCard(item) {
   if (item.includesGrass || item.name.includes('逮丸')) badge = '特調';
   else if (item.name.includes('粉粿') && item.name.includes('黑糖')) badge = '人氣';
 
+  const theme = item.theme || (cat && cat.theme) || 'brown';
   card.innerHTML = `
     ${badge ? `<div class="drink-badge">${badge}</div>` : ''}
     <div class="drink-code">${code}</div>
     <div class="drink-img">
-      ${cupSvg(item.theme || 'brown')}
+      ${cupSvg(theme)}
       <button class="fav-btn${isFav ? ' active' : ''}" data-id="${item.id}">★</button>
     </div>
     <div class="drink-info">
@@ -784,9 +785,10 @@ async function renderCart() {
     const prefix = cat ? (SERIES_PREFIX[cat.series] || 'X') : 'X';
     const idx = cat ? cat.items.findIndex(i => i.id === item.id) + 1 : 0;
     const code = `${prefix}·${String(idx).padStart(2, '0')}`;
+    const itemTheme = item.theme || (cat && cat.theme) || 'brown';
     div.innerHTML = `
       <div class="cart-item-cup">
-        ${cupSvg(item.theme || 'brown')}
+        ${cupSvg(itemTheme)}
       </div>
       <div class="cart-item-info">
         <div class="cart-item-code">${code}</div>

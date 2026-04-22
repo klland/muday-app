@@ -931,9 +931,7 @@ function buildOrderText(name) {
 checkoutBtn.addEventListener('click', async () => {
   if (cart.length === 0) return;
 
-  const name = isInLiff && lineProfile
-    ? lineProfile.displayName
-    : (nameInput.value.trim() || '匿名');
+  const name = nameInput.value.trim() || (lineProfile ? lineProfile.displayName : '匿名');
 
   const total = cart.reduce((s, i) => s + i.totalPrice, 0);
   const cartSnapshot = [...cart];
@@ -1236,7 +1234,8 @@ async function initLiff() {
     isInLiff = liff.isInClient();
     lineProfile = await liff.getProfile();
     document.getElementById('lineUserName').textContent = `· ${lineProfile.displayName} ·`;
-    nameRow.style.display = 'none';
+    nameInput.value = lineProfile.displayName;
+    nameRow.style.display = 'flex';
   } catch (e) {
     console.warn('LIFF 初始化失敗，改為瀏覽器模式', e);
     nameRow.style.display = 'flex';

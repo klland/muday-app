@@ -168,7 +168,7 @@ const MENU = [
       { id: 102, name: '糯米香茶',    emoji: '🍶', price: 45, kcal: 200, caffeine: 2 },
       { id: 103, name: '島韻紅茶',    emoji: '🍂', price: 40, kcal: 200, caffeine: 3 },
       { id: 104, name: '炭培烏龍',    emoji: '🫖', price: 40, kcal: 200, caffeine: 2 },
-      { id: 105, name: '油切蕎麥茶',  emoji: '🌾', price: 40, kcal: 10, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true, recommendNoSugar: true },
+      { id: 105, name: '油切蕎麥茶',  emoji: '🌾', price: 40, kcal: 10, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true, popular: true },
       { id: 106, name: '手採高山青',  emoji: '🏔️', price: 40, kcal: 200, caffeine: 2 },
     ]
   },
@@ -447,7 +447,7 @@ function createDrinkCard(item) {
   // badge: 人氣 for popular items (kcal > 450), 特調 for special
   let badge = '';
   if (item.includesGrass || item.name.includes('逮丸')) badge = '特調';
-  else if (item.name.includes('粉粿') && item.name.includes('黑糖')) badge = '人氣';
+  else if (item.popular) badge = '人氣';
 
   const theme = item.theme || (cat && cat.theme) || 'brown';
   card.innerHTML = `

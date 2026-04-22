@@ -1281,6 +1281,8 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .group-modal-footer {
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--sp-md);
+  background: #2a1f14;
+  border-top: none;
 }
 .group-footer-left { display: flex; flex-direction: column; gap: 2px; }
 .group-footer-label {
@@ -1288,12 +1290,12 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   font-style: italic;
   font-size: 10px;
   letter-spacing: 1.5px;
-  color: var(--dim);
+  color: #8a7a68;
 }
 .group-footer-total {
   font-family: var(--font-en);
   font-size: 22px;
-  color: var(--accent);
+  color: #f4e8d0;
   letter-spacing: 0.5px;
 }
 .group-send-btn {

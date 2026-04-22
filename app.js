@@ -40,25 +40,16 @@ const THEME_CUP_DARK = {
   gold:  '#906428', blue: '#2a5060', teal:  '#2a5040',
 };
 
-// 手繪風杯子 SVG，依 theme 色彩
+// CSS 雙色杯子，依 theme class 帶色
 function cupSvg(theme) {
-  const fill = THEME_CUP_COLOR[theme] || '#8a7060';
-  const dark = THEME_CUP_DARK[theme]  || '#6a5040';
-  return `<svg viewBox="0 0 56 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- 杯蓋 -->
-    <ellipse cx="28" cy="14" rx="16" ry="3.5" fill="#f7efdc" stroke="#2d2418" stroke-width="1"/>
-    <rect x="12" y="13" width="32" height="4" rx="0" fill="#f7efdc"/>
-    <!-- 吸管 -->
-    <line x1="31" y1="14" x2="34" y2="4" stroke="#2d2418" stroke-width="1.4" stroke-linecap="round"/>
-    <!-- 杯身 -->
-    <path d="M13 17 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L43 17 Z" fill="${fill}" opacity="0.88"/>
-    <!-- 杯底層色 -->
-    <path d="M17 48 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L39 48 Z" fill="${dark}" opacity="0.75"/>
-    <!-- 杯身外框 -->
-    <path d="M13 17 L16 56 Q16 62 22 62 L34 62 Q40 62 40 56 L43 17" fill="none" stroke="#2d2418" stroke-width="1" stroke-linejoin="round"/>
-    <!-- 杯蓋上緣線 -->
-    <line x1="12" y1="17" x2="44" y2="17" stroke="#2d2418" stroke-width="1"/>
-  </svg>`;
+  return `<div class="drink-cup theme-${theme || 'brown'}">
+    <div class="cup-straw"></div>
+    <div class="cup-lid"></div>
+    <div class="cup-body">
+      <div class="cup-top-layer"></div>
+      <div class="cup-bot-layer"></div>
+    </div>
+  </div>`;
 }
 
 // 每個 series 的流水編號前綴

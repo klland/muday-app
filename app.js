@@ -960,8 +960,17 @@ successModal.addEventListener('click', e => { if (e.target === successModal) suc
 let historyCache = [];
 
 function formatDate(ts) {
-  const d = new Date(ts);
-  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  const d   = new Date(ts);
+  const now = new Date();
+  const hm  = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  const dayDiff = Math.floor((now - d) / 86400000);
+  const weekDays = ['日','一','二','三','四','五','六'];
+  let prefix;
+  if (dayDiff === 0)      prefix = '今日';
+  else if (dayDiff === 1) prefix = '昨日';
+  else if (dayDiff < 7)  prefix = `週${weekDays[d.getDay()]}`;
+  else                   prefix = `${d.getMonth()+1}/${d.getDate()}`;
+  return `${prefix} ${hm}`;
 }
 
 historyBtn.addEventListener('click', async () => {
@@ -995,19 +1004,31 @@ historyBtn.addEventListener('click', async () => {
     historyCache.forEach((order, idx) => {
       const div = document.createElement('div');
       div.className = 'history-item';
-      const itemsHtml = order.items.map(i => `
-        <div class="history-drink">${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
-        <div class="history-opts">${[...toArr(i.opts), ...(toArr(i.toppings).length ? ['加：'+toArr(i.toppings).join('、')] : [])].join(' · ')}</div>
-      `).join('');
+      const orderNum = `#M${String(241 - idx).padStart(3,'0')}`;
+      const itemsHtml = order.items.map(i => {
+        const opts = [...toArr(i.opts), ...(toArr(i.toppings).length ? [toArr(i.toppings).join('・')] : [])].join('・');
+        return `
+          <div class="history-drink">
+            <span class="history-qty">×${i.qty}</span>
+            <div class="history-drink-info">
+              <span class="history-drink-name">${i.name}</span>
+              ${opts ? `<div class="history-opts">${opts}</div>` : ''}
+            </div>
+            <span class="history-drink-price">$${i.totalPrice}</span>
+          </div>`;
+      }).join('');
       div.innerHTML = `
         <div class="history-header">
-          <span class="history-date">${order.name}・${formatDate(order.timestamp)}</span>
-          <span class="history-total">合計 $${order.total}</span>
+          <div class="history-header-left">
+            <span class="history-order-num">${orderNum}</span>
+            <span class="history-date">${formatDate(order.timestamp)}</span>
+          </div>
+          <span class="history-total">NT$ ${order.total}</span>
         </div>
-        <div>${itemsHtml}</div>
+        <div class="history-items">${itemsHtml}</div>
         <div class="history-actions">
-          <button class="reorder-btn history-reorder" data-idx="${idx}">再來一單</button>
-          <button class="reorder-btn history-detail" data-idx="${idx}">查看詳情</button>
+          <button class="history-btn history-reorder" data-idx="${idx}">再來一單</button>
+          <button class="history-btn history-detail" data-idx="${idx}">查看詳情</button>
         </div>
       `;
       body.appendChild(div);

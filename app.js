@@ -753,6 +753,7 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
 
   cart.push({
     id: Date.now(),
+    drinkId: item.id,
     name: item.name,
     emoji: item.emoji,
     opts,
@@ -855,7 +856,7 @@ async function renderCart() {
     const itemTheme = item.theme || (cat && cat.theme) || 'brown';
     div.innerHTML = `
       <div class="cart-item-cup">
-        ${cupSvg(itemTheme, item.id)}
+        ${cupSvg(itemTheme, item.drinkId || item.id)}
       </div>
       <div class="cart-item-info">
         <div class="cart-item-code">${code}</div>

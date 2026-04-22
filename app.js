@@ -28,21 +28,86 @@ const THEME_EN = {
   gold: 'Cheese Cap', blue: 'Fresh Milk', teal: 'Winter Melon',
 };
 
-// 杯子液體色（主色）
+// 每杯獨立顏色（liquid: 主色, top: 底層深色）
+// 參考 drinks.jsx，未收錄的杯子依茶底特性補色
+const DRINK_COLORS = {
+  // 原味茶 Pure Tea
+  101: { liquid: '#d4d6a8', top: '#b8bc83' }, // 輕香烏龍綠 — 淺綠
+  102: { liquid: '#e6dcb8', top: '#c8b985' }, // 糯米香茶 — 米黃
+  103: { liquid: '#b86d42', top: '#9a5530' }, // 島韻紅茶 — 紅棕
+  104: { liquid: '#a87550', top: '#855a3a' }, // 炭培烏龍 — 焦棕
+  105: { liquid: '#c9a85e', top: '#a88540' }, // 油切蕎麥茶 — 金黃
+  106: { liquid: '#b8c88a', top: '#92a568' }, // 手採高山青 — 草綠
+
+  // 風味茶 Flavor Tea
+  201: { liquid: '#d4c8a0', top: '#b0a070' }, // 牡丹高山青 — 淡金綠
+  202: { liquid: '#c8c090', top: '#a89a68' }, // 牡丹蕎麥茶 — 米綠
+  203: { liquid: '#eae0a0', top: '#d68a68' }, // 粉粿牡丹檸檬 — 蛋黃橙
+  204: { liquid: '#c89878', top: '#a07050' }, // 酸梅湯烏龍綠 — 梅棕
+  205: { liquid: '#d8dca0', top: '#b8be78' }, // 輕檸烏龍綠 — 黃綠
+  206: { liquid: '#dcd898', top: '#b4b060' }, // 糯香檸檬茶 — 淡黃
+  207: { liquid: '#e8d898', top: '#c4a860' }, // 粉粿桂花檸檬 — 桂花黃
+  208: { liquid: '#c88868', top: '#a06040' }, // 粉粿黑糖檸檬 — 糖棕
+  209: { liquid: '#d89488', top: '#b26e60' }, // 荔枝烏龍 — 荔枝粉
+  210: { liquid: '#d8b0a0', top: '#b08878' }, // 荔枝蘆薈 — 淡粉
+  211: { liquid: '#c28050', top: '#96602e' }, // 檸檬紅茶 — 紅橙
+  212: { liquid: '#d0c898', top: '#a8a070' }, // 檸檬高山青 — 淡黃綠
+  213: { liquid: '#d8c890', top: '#b0a060' }, // 桂花蕎麥茶 — 桂花金
+
+  // 奶茶 Milk Tea
+  301: { liquid: '#c8a678', top: '#a07f50' }, // 烏龍綠奶茶
+  302: { liquid: '#d4b888', top: '#a88858' }, // 糯香奶茶 — 奶褐
+  303: { liquid: '#a87a50', top: '#6e4a28' }, // 粉粿黑糖奶茶 — 深棕
+  304: { liquid: '#c8b070', top: '#a08840' }, // 黃金蕎麥奶茶 — 蕎麥金
+  305: { liquid: '#b88858', top: '#5a8040' }, // 逮丸奶茶 — 棕+草綠頂
+  306: { liquid: '#6a5648', top: '#3a2e28' }, // 極黑芝麻奶茶 — 墨黑
+  307: { liquid: '#b87858', top: '#885040' }, // 島韻紅奶茶 — 紅棕奶
+  308: { liquid: '#c09870', top: '#986848' }, // 烏龍奶茶 — 烏龍褐
+  309: { liquid: '#b8c078', top: '#909858' }, // 高山青奶茶 — 青綠奶
+  311: { liquid: '#8a9870', top: '#606848' }, // 嫩仙草奶茶 — 仙草綠
+
+  // 芝士奶蓋 Cheese Cap
+  401: { liquid: '#c2c88a', top: '#f4e8c8' }, // 奶蓋烏龍綠 — 綠+奶蓋
+  402: { liquid: '#d8c898', top: '#f4e8c8' }, // 奶蓋糯香茶 — 米+奶蓋
+  403: { liquid: '#a86540', top: '#f4e8c8' }, // 奶蓋島韻紅 — 紅棕+奶蓋
+  404: { liquid: '#b88858', top: '#f4e8c8' }, // 奶蓋烏龍茶 — 烏龍+奶蓋
+  405: { liquid: '#c8a858', top: '#f4e8c8' }, // 奶蓋蕎麥茶 — 金+奶蓋
+  406: { liquid: '#b8c080', top: '#f4e8c8' }, // 奶蓋高山青 — 青綠+奶蓋
+
+  // 鮮奶茶 Fresh Milk
+  501: { liquid: '#d8cfa8', top: '#a68860' }, // 烏龍綠鮮奶茶
+  502: { liquid: '#e0d4b0', top: '#b8a878' }, // 糯香鮮奶茶 — 奶白
+  503: { liquid: '#d0c090', top: '#a89860' }, // 蕎麥鮮奶茶 — 蕎麥奶
+  504: { liquid: '#ccc090', top: '#a89868' }, // 烏龍鮮奶茶 — 淡褐奶
+  505: { liquid: '#c8a880', top: '#a07858' }, // 島韻紅鮮奶茶 — 紅奶
+  506: { liquid: '#706058', top: '#3a3028' }, // 極黑芝麻鮮奶 — 墨黑奶
+  508: { liquid: '#b88862', top: '#4a3020' }, // 粉粿黑糖鮮奶 — 糖奶
+  509: { liquid: '#c8c890', top: '#a0a068' }, // 高山青鮮奶茶 — 青綠奶
+
+  // 冬瓜茶 Winter Melon
+  601: { liquid: '#b08a55', top: '#8a6838' }, // 冬瓜紅茶
+  602: { liquid: '#a8a870', top: '#808050' }, // 冬瓜青茶 — 青褐
+  603: { liquid: '#d8c078', top: '#b0984a' }, // 冬瓜檸檬 — 蜜黃
+  604: { liquid: '#908868', top: '#605840' }, // 冬瓜仙草蜜 — 仙草褐
+  605: { liquid: '#c0b070', top: '#988848' }, // 冬瓜蕎麥茶 — 蕎麥蜜
+  606: { liquid: '#b09868', top: '#887040' }, // 冬瓜烏龍茶 — 烏龍蜜
+};
+
+// fallback theme 色（無獨立顏色時使用）
 const THEME_LIQUID = {
   green: '#d4d6a8', pink: '#d89488', brown: '#a87a50',
   gold:  '#c9a85e', blue:  '#d8cfa8', teal:  '#b08a55',
 };
-// 杯子頂層色（較深，底部 topping band）
 const THEME_TOP = {
   green: '#b8bc83', pink: '#b26e60', brown: '#6e4a28',
   gold:  '#a88540', blue:  '#a68860', teal:  '#8a6838',
 };
 
 // InkCup 手繪風 SVG 杯子
-function cupSvg(theme) {
-  const liquid = THEME_LIQUID[theme] || '#a87a50';
-  const top    = THEME_TOP[theme]    || '#6e4a28';
+function cupSvg(theme, id) {
+  const c = (id && DRINK_COLORS[id]) || null;
+  const liquid = c ? c.liquid : (THEME_LIQUID[theme] || '#a87a50');
+  const top    = c ? c.top    : (THEME_TOP[theme]    || '#6e4a28');
   const stroke = '#2d2418';
   return `<svg width="56" height="70" viewBox="0 0 60 75" style="display:block">
     <path d="M11 20 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L49 20 Z" fill="${liquid}" opacity="0.85"/>
@@ -389,7 +454,7 @@ function createDrinkCard(item) {
     ${badge ? `<div class="drink-badge">${badge}</div>` : ''}
     <div class="drink-code">${code}</div>
     <div class="drink-img">
-      ${cupSvg(theme)}
+      ${cupSvg(theme, item.id)}
       <button class="fav-btn${isFav ? ' active' : ''}" data-id="${item.id}">★</button>
     </div>
     <div class="drink-info">
@@ -790,7 +855,7 @@ async function renderCart() {
     const itemTheme = item.theme || (cat && cat.theme) || 'brown';
     div.innerHTML = `
       <div class="cart-item-cup">
-        ${cupSvg(itemTheme)}
+        ${cupSvg(itemTheme, item.id)}
       </div>
       <div class="cart-item-info">
         <div class="cart-item-code">${code}</div>

@@ -1077,7 +1077,7 @@ groupModal.addEventListener('click', e => {
 function renderGroupOrders() {
   const body    = document.getElementById('groupBody');
   const footer  = document.getElementById('groupFooter');
-  const summaryEl = document.getElementById('groupFooterSummary');
+  const totalEl = document.getElementById('groupFooterTotal');
 
   const activeOrders = groupOrders.filter(o => o.items.length > 0);
 
@@ -1090,25 +1090,52 @@ function renderGroupOrders() {
   footer.style.display = '';
   let totalCups = 0, totalPrice = 0;
 
-  let html = '';
+  // 先算總計
   activeOrders.forEach(order => {
+    order.items.forEach(item => { totalCups += item.qty; totalPrice += item.totalPrice; });
+  });
+
+  // 統計列
+  let html = `<div class="group-stats">
+    <div class="group-stat-cell">
+      <div class="group-stat-label">人數<br><span class="group-stat-en">people</span></div>
+      <div class="group-stat-val">${activeOrders.length}</div>
+    </div>
+    <div class="group-stat-cell">
+      <div class="group-stat-label">杯數<br><span class="group-stat-en">cups</span></div>
+      <div class="group-stat-val">${totalCups}</div>
+    </div>
+    <div class="group-stat-cell accent">
+      <div class="group-stat-label">合計<br><span class="group-stat-en">total</span></div>
+      <div class="group-stat-val accent">NT$${totalPrice}</div>
+    </div>
+  </div>`;
+
+  // 每人方格
+  activeOrders.forEach(order => {
+    const name = order.name || '匿名';
+    const firstChar = name.charAt(0);
+    const orderCups  = order.items.reduce((s, i) => s + i.qty, 0);
     const orderTotal = order.items.reduce((s, i) => s + i.totalPrice, 0);
     html += `<div class="group-person">
       <div class="group-person-header">
-        <span class="group-person-name">${order.name || '匿名'}</span>
+        <div class="group-person-stamp">${firstChar}</div>
+        <div class="group-person-meta">
+          <span class="group-person-name">${name}</span>
+          <span class="group-person-cups">${orderCups} cups</span>
+        </div>
         <span class="group-person-subtotal">NT$ ${orderTotal}</span>
       </div>`;
     order.items.forEach(item => {
-      totalCups  += item.qty;
-      totalPrice += item.totalPrice;
-      const detail = [...item.opts, ...(item.toppings.length ? ['加：'+item.toppings.join('、')] : [])].join('・');
+      const detail = [...item.opts, ...(item.toppings.length ? [item.toppings.join('・')] : [])].join('・');
       html += `
         <div class="group-item">
+          <span class="group-item-qty-badge">×${item.qty}</span>
           <div class="group-item-info">
-            <div class="group-item-name">${item.name} <span class="group-item-qty">× ${item.qty}</span></div>
+            <div class="group-item-name">${item.name}</div>
             <div class="group-item-opts">${detail}</div>
           </div>
-          <span class="group-item-price">NT$ ${item.totalPrice}</span>
+          <span class="group-item-price">$${item.totalPrice}</span>
           <button class="group-del-btn" data-fbkey="${order._fbKey}" data-idx="${item._itemIdx}">✕</button>
         </div>`;
     });
@@ -1116,7 +1143,7 @@ function renderGroupOrders() {
   });
 
   body.innerHTML = html;
-  summaryEl.textContent = `共 ${activeOrders.length} 人・${totalCups} 杯・合計 NT$ ${totalPrice}`;
+  totalEl.textContent = `NT$ ${totalPrice}`;
 
   // 刪除按鈕：真正從 Firebase 刪除
   body.querySelectorAll('.group-del-btn').forEach(btn => {

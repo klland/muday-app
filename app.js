@@ -918,7 +918,10 @@ historyBtn.addEventListener('click', async () => {
           <span class="history-total">合計 $${order.total}</span>
         </div>
         <div>${itemsHtml}</div>
-        <button class="reorder-btn history-reorder" data-idx="${idx}">🔄 重點此筆訂單</button>
+        <div class="history-actions">
+          <button class="reorder-btn history-reorder" data-idx="${idx}">再來一單</button>
+          <button class="reorder-btn history-detail" data-idx="${idx}">查看詳情</button>
+        </div>
       `;
       body.appendChild(div);
     });
@@ -932,6 +935,17 @@ historyBtn.addEventListener('click', async () => {
         historyModal.classList.remove('open');
         document.body.style.overflow = '';
         openCart();
+      });
+    });
+
+    body.querySelectorAll('.history-detail').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const order = historyCache[Number(btn.dataset.idx)];
+        const detailHtml = order.items.map(i => `
+          <div class="history-drink">${i.name} × ${i.qty}<span>$${i.totalPrice}</span></div>
+          <div class="history-opts">${[...toArr(i.opts), ...(toArr(i.toppings).length ? ['加：'+toArr(i.toppings).join('、')] : [])].join(' · ')}</div>
+        `).join('');
+        alert(`${order.name}・${formatDate(order.timestamp)}\n合計 $${order.total}\n\n${order.items.map(i => `${i.name} × ${i.qty} $${i.totalPrice}`).join('\n')}`);
       });
     });
   } catch(e) {

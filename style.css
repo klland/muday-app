@@ -977,7 +977,16 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   line-height: 1.6;
   margin-bottom: 4px;
 }
-.history-reorder { margin: var(--sp-sm) 0 0 0; }
+.history-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: var(--sp-sm);
+}
+.history-actions .reorder-btn {
+  flex: 1;
+  display: block;
+  margin: 0;
+}
 
 /* ---------- Group Modal ---------- */
 .group-person {

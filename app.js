@@ -365,6 +365,7 @@ const historyBtn   = document.getElementById('historyBtn');
 const groupBtn     = document.getElementById('groupBtn');
 const historyModal = document.getElementById('historyModal');
 const groupModal   = document.getElementById('groupModal');
+const groupSubtitleInput = document.getElementById('groupSubtitle');
 
 // ===== 建立菜單 =====
 function buildMenu(filterCat = null) {
@@ -1080,9 +1081,105 @@ historyModal.addEventListener('click', e => {
 // ===== 今日團購 =====
 let groupOrders = [];
 
+// ===== 今日團購：群組備註（Firebase 同步） =====
+// 需求：同一個 GROUP_ID + 同一天，跨裝置看到相同的備註文字。
+function groupMetaPath() {
+  return `group_meta/${GROUP_ID}/${getTodayKey()}`;
+}
+
+let groupMetaRef = null;
+let groupMetaValueHandler = null;
+let subtitleSaveTimer = null;
+let suppressRemoteSubtitleUntil = 0;
+
+async function loadGroupSubtitleOnce() {
+  if (!groupSubtitleInput) return;
+  try {
+    const snap = await db.ref(groupMetaPath()).get();
+    const val = snap.exists() ? snap.val() : null;
+    const remoteSubtitle = (val && typeof val.subtitle === 'string') ? val.subtitle : '';
+    // 不覆蓋使用者正在輸入的內容
+    if (document.activeElement === groupSubtitleInput) return;
+    if ((groupSubtitleInput.value || '').trim() === (remoteSubtitle || '').trim()) return;
+    groupSubtitleInput.value = remoteSubtitle || '';
+  } catch (e) {
+    console.warn('group subtitle load failed:', e);
+  }
+}
+
+function startGroupSubtitleSync() {
+  if (!groupSubtitleInput) return;
+  if (groupMetaRef) return; // already listening
+
+  groupMetaRef = db.ref(groupMetaPath());
+  loadGroupSubtitleOnce();
+
+  groupMetaValueHandler = snap => {
+    const now = Date.now();
+    if (now < suppressRemoteSubtitleUntil) return;
+
+    const val = snap.exists() ? snap.val() : null;
+    const remoteSubtitle = (val && typeof val.subtitle === 'string') ? val.subtitle : '';
+
+    // 避免在輸入時被遠端覆蓋
+    if (document.activeElement === groupSubtitleInput) return;
+    if ((groupSubtitleInput.value || '').trim() === (remoteSubtitle || '').trim()) return;
+
+    groupSubtitleInput.value = remoteSubtitle || '';
+  };
+
+  groupMetaRef.on('value', groupMetaValueHandler);
+}
+
+function stopGroupSubtitleSync() {
+  if (!groupMetaRef) return;
+  if (groupMetaValueHandler) groupMetaRef.off('value', groupMetaValueHandler);
+  groupMetaRef = null;
+  groupMetaValueHandler = null;
+  if (subtitleSaveTimer) {
+    clearTimeout(subtitleSaveTimer);
+    subtitleSaveTimer = null;
+  }
+}
+
+function queueSaveGroupSubtitle() {
+  if (!groupSubtitleInput) return;
+  const subtitle = (groupSubtitleInput.value || '').trim();
+
+  if (subtitleSaveTimer) clearTimeout(subtitleSaveTimer);
+  subtitleSaveTimer = setTimeout(async () => {
+    subtitleSaveTimer = null;
+    try {
+      await db.ref(groupMetaPath()).update({ subtitle, updatedAt: Date.now() });
+    } catch (e) {
+      console.warn('group subtitle save failed:', e);
+    }
+  }, 350);
+}
+
+if (groupSubtitleInput) {
+  groupSubtitleInput.addEventListener('input', () => {
+    // 本地輸入後短時間內忽略遠端推送，避免「打字被跳動」
+    suppressRemoteSubtitleUntil = Date.now() + 1200;
+    queueSaveGroupSubtitle();
+  });
+  groupSubtitleInput.addEventListener('blur', () => {
+    // 離開欄位時再補一次保存，確保最後字元有寫入
+    queueSaveGroupSubtitle();
+    suppressRemoteSubtitleUntil = 0;
+  });
+}
+
+function closeGroupModal() {
+  groupModal.classList.remove('open');
+  document.body.style.overflow = '';
+  stopGroupSubtitleSync();
+}
+
 groupBtn.addEventListener('click', async () => {
   groupModal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  startGroupSubtitleSync();
   const body = document.getElementById('groupBody');
   body.innerHTML = `<div style="padding:16px;display:flex;flex-direction:column;gap:12px">
     ${[1,2,3].map(()=>`<div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>`).join('')}
@@ -1096,11 +1193,10 @@ groupBtn.addEventListener('click', async () => {
 });
 
 document.getElementById('closeGroup').addEventListener('click', () => {
-  groupModal.classList.remove('open');
-  document.body.style.overflow = '';
+  closeGroupModal();
 });
 groupModal.addEventListener('click', e => {
-  if (e.target === groupModal) { groupModal.classList.remove('open'); document.body.style.overflow = ''; }
+  if (e.target === groupModal) closeGroupModal();
 });
 
 function renderGroupOrders() {
@@ -1256,9 +1352,10 @@ document.getElementById('sendGroupBtn').addEventListener('click', async () => {
     });
   } catch(e) { showToast('⚠️ 歷史儲存失敗：' + e.message, 'error'); }
   try { await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).remove(); } catch(e) {}
+  try { await db.ref(groupMetaPath()).remove(); } catch(e) {}
 
   groupOrders = [];
-  groupModal.classList.remove('open');
+  closeGroupModal();
 
   // 顯示複製 modal
   document.getElementById('copyText').value = text;

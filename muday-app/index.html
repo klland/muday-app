@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一沐日點餐</title>
+  <link rel="stylesheet" href="style.css" />
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="17" cy="17" r="7" fill="#c8845a"/>
+            <line x1="17" y1="3" x2="17" y2="7" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="17" y1="27" x2="17" y2="31" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="17" x2="7" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27" y1="17" x2="31" y2="17" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7.05" y1="7.05" x2="9.88" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="24.12" y1="24.12" x2="26.95" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="26.95" y1="7.05" x2="24.12" y2="9.88" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9.88" y1="24.12" x2="7.05" y2="26.95" stroke="#c8845a" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="logo-text-wrap">
+          <span class="logo-text">一沐日</span>
+          <span class="logo-sub" id="lineUserName"></span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="historyBtn" title="歷史訂單">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="groupBtn" title="今日團購">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="2.2"/>
+            <path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 13c2.2 0 4 1.8 4 4"/>
+          </svg>
+        </button>
+        <button class="cart-btn" id="cartBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主頁 -->
+  <main class="main">
+    <nav class="category-nav" id="categoryNav"></nav>
+    <section class="menu-section" id="menuSection"></section>
+  </main>
+
+  <!-- 購物車側板 -->
+  <aside class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h2>我的訂單</h2>
+      <button class="close-btn" id="closeCart">✕</button>
+    </div>
+
+    <div class="name-row" id="nameRow">
+      <label for="nameInput">你的名字</label>
+      <input type="text" id="nameInput" placeholder="輸入名字，方便對單" maxlength="10" />
+    </div>
+
+    <div class="cart-body" id="cartBody">
+      <p class="cart-empty">購物車是空的</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total">
+        <span>合計</span>
+        <span id="cartTotal">$0</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn">送出訂單</button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- 客製化 Modal -->
+  <div class="modal" id="customModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle"></h3>
+          <div class="modal-tags" id="modalTags"></div>
+        </div>
+        <button class="close-btn" id="closeModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalPrice" class="modal-price"></p>
+        <div class="fixed-note" id="fixedNote" style="display:none">此飲品甜度與冰量固定，不可調整</div>
+        <div class="option-group" id="sugarGroup">
+          <label>甜度</label>
+          <div class="option-row" id="sugarOptions"></div>
+        </div>
+        <div class="option-group" id="iceGroup">
+          <label>冰量（冷飲 660ml）</label>
+          <div class="option-row" id="iceOptions"></div>
+        </div>
+        <div class="option-group" id="peppercornGroup" style="display:none">
+          <label>麻度</label>
+          <div class="option-row" id="peppercornOptions"></div>
+        </div>
+        <div class="option-group" id="addAcidGroup" style="display:none">
+          <label>加酸</label>
+          <div class="option-row" id="addAcidOptions"></div>
+        </div>
+        <div class="option-group" id="thickenTeaGroup" style="display:none">
+          <label>茶加厚</label>
+          <div class="option-row" id="thickenTeaOptions"></div>
+        </div>
+        <div class="option-group" id="noCaffGroup" style="display:none">
+          <label>咖啡因客製</label>
+          <div class="option-row" id="noCaffOptions"></div>
+        </div>
+        <div class="option-group" id="hotGroup" style="display:none">
+          <label>溫度客製</label>
+          <div class="option-row" id="hotOptions"></div>
+        </div>
+        <div class="option-group">
+          <label>加好料 <small>（可複選）</small></label>
+          <div class="option-row" id="toppingOptions"></div>
+        </div>
+        <div class="fixed-note" id="hotPowderNote" style="display:none;background:#fff3e0;border-color:#ffb74d;color:#e65100">
+          ⚠️ 粉粿遇熱會融化，請確認是否仍要加料
+        </div>
+        <div class="qty-group">
+          <button class="qty-btn" id="qtyMinus">－</button>
+          <span id="qtyDisplay">1</span>
+          <button class="qty-btn" id="qtyPlus">＋</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <span id="modalTotalPrice" class="modal-total"></span>
+          <span id="modalKcalEst" class="modal-kcal-est"></span>
+        </div>
+        <button class="add-btn" id="addToCartBtn">加入購物車</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 送出成功 Modal -->
+  <div class="modal" id="successModal">
+    <div class="modal-card success-card">
+      <div class="success-icon">🎉</div>
+      <h3>訂單已送出！</h3>
+      <p class="success-name" id="successName"></p>
+      <div class="success-items" id="successItems"></div>
+      <p class="success-sub">等大家都點完<br>請按 👥 匯總後傳到 LINE</p>
+      <button class="add-btn" id="closeSuccess" style="margin-top:16px;width:100%">繼續點餐</button>
+    </div>
+  </div>
+
+  <!-- 歷史訂單 Modal -->
+  <div class="modal" id="historyModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📋 歷史訂單</h3>
+        <button class="close-btn" id="closeHistory">✕</button>
+      </div>
+      <div class="modal-body" id="historyBody"></div>
+    </div>
+  </div>
+
+  <!-- 今日團購 Modal -->
+  <div class="modal" id="groupModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>👥 今日團購匯總</h3>
+        <button class="close-btn" id="closeGroup">✕</button>
+      </div>
+      <div class="modal-body" id="groupBody">
+        <p style="text-align:center;color:#888;padding:20px"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="add-btn" id="sendGroupBtn" style="width:100%">傳送匯總到 LINE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 複製匯總 Modal -->
+  <div class="modal" id="copyModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📋 匯總文字</h3>
+        <button class="close-btn" id="closeCopyModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="copyText" readonly style="width:100%;height:200px;font-size:14px;line-height:1.6;border:1px solid #ddd;border-radius:8px;padding:10px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="add-btn" id="doCopyBtn" style="width:100%">複製 → 貼到 LINE</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="app.js?v=4"></script>
+</body>
+</html>

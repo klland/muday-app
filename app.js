@@ -1380,9 +1380,13 @@ function renderGroupOrders() {
       </div>`;
     order.items.forEach(item => {
       const detail = [...item.opts, ...(item.toppings.length ? [item.toppings.join('・')] : [])].join('・');
+      const drinkMeta = getDrinkMeta(item);
       html += `
         <div class="group-item">
-          <span class="group-item-qty-badge">×${item.qty}</span>
+          <div class="group-item-mark">
+            <div class="group-cup">${cupSvg(drinkMeta.theme, drinkMeta.id)}</div>
+            <span class="group-item-qty-badge">×${item.qty}</span>
+          </div>
           <div class="group-item-info">
             <div class="group-item-name">${item.name}</div>
             <div class="group-item-opts">${detail}</div>

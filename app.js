@@ -692,6 +692,22 @@ function getItemBaseKcal(item) {
   return cat?.baseKcal ?? 0;
 }
 
+function getDrinkMeta(item) {
+  const drinkId = Number(item.drinkId || 0);
+  let cat = MENU.find(c => c.items.some(i => i.id === drinkId));
+  let menuItem = cat ? cat.items.find(i => i.id === drinkId) : null;
+
+  if (!menuItem) {
+    cat = MENU.find(c => c.items.some(i => i.name === item.name));
+    menuItem = cat ? cat.items.find(i => i.name === item.name) : null;
+  }
+
+  return {
+    id: menuItem?.id || drinkId || null,
+    theme: item.theme || cat?.theme || 'brown',
+  };
+}
+
 function calcEstKcal() {
   if (!currentItem) return null;
   const item = currentItem;
@@ -1120,9 +1136,13 @@ historyBtn.addEventListener('click', async () => {
         const groupCups = group.items.reduce((sum, i) => sum + (Number(i.qty) || 1), 0);
         const drinksHtml = group.items.map(i => {
           const opts = [...toArr(i.opts), ...(toArr(i.toppings).length ? [toArr(i.toppings).join('・')] : [])].join('・');
+          const drinkMeta = getDrinkMeta(i);
           return `
             <div class="history-drink">
-              <span class="history-qty">×${i.qty || 1}</span>
+              <div class="history-drink-mark">
+                <div class="history-cup">${cupSvg(drinkMeta.theme, drinkMeta.id)}</div>
+                <span class="history-qty">×${i.qty || 1}</span>
+              </div>
               <div class="history-drink-info">
                 <span class="history-drink-name">${escapeHtml(i.name)}</span>
                 ${opts ? `<div class="history-opts">${escapeHtml(opts)}</div>` : ''}

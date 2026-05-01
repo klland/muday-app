@@ -1003,9 +1003,17 @@ function formatDate(ts) {
 }
 
 function historyPersonLabel(order) {
-  const people = toArr(order.people)
-    .map(name => String(name || '').trim())
+  const textPeople = String(order.text || '')
+    .split('\n')
+    .map(line => line.match(/^【(.+)】$/)?.[1])
     .filter(Boolean);
+  const itemPeople = toArr(order.items)
+    .map(item => item.customerName)
+    .filter(Boolean);
+  const people = [...toArr(order.people), ...textPeople, ...itemPeople]
+    .map(name => String(name || '').trim())
+    .filter(Boolean)
+    .filter((name, idx, arr) => arr.indexOf(name) === idx);
 
   if (people.length > 0) {
     return `點餐人 ${people.length} 位 · ${people.join('、')}`;
@@ -1052,6 +1060,7 @@ historyBtn.addEventListener('click', async () => {
           <div class="history-drink">
             <span class="history-qty">×${i.qty}</span>
             <div class="history-drink-info">
+              ${i.customerName ? `<div class="history-customer">${escapeHtml(i.customerName)}</div>` : ''}
               <span class="history-drink-name">${escapeHtml(i.name)}</span>
               ${opts ? `<div class="history-opts">${escapeHtml(opts)}</div>` : ''}
             </div>
@@ -1356,28 +1365,52 @@ function buildGroupText() {
 }
 
 
-document.getElementById('sendGroupBtn').addEventListener('click', async () => {
-  const activeOrders = groupOrders.filter(o => o.items.length > 0);
-  if (activeOrders.length === 0) return;
-  const text = buildGroupText();
+let pendingGroupSummary = null;
 
-  // Firebase 操作
-  const totalPrice = activeOrders.reduce((s, o) => s + o.total, 0);
-  const allItems   = activeOrders.flatMap(o => o.items.map(({ _itemIdx, ...rest }) => rest));
+async function finalizePendingGroupSummary() {
+  if (!pendingGroupSummary || pendingGroupSummary.finalized) return true;
+
+  const summary = pendingGroupSummary;
+  summary.finalized = true;
+
   try {
     await db.ref(`history/${GROUP_ID}`).push({
       timestamp: Date.now(),
       name: '團購匯總',
-      items: allItems,
-      total: totalPrice,
-      text: text,
-      people: activeOrders.map(o => o.name),
+      items: summary.items,
+      total: summary.totalPrice,
+      text: summary.text,
+      people: summary.people,
     });
-  } catch(e) { showToast('⚠️ 歷史儲存失敗：' + e.message, 'error'); }
+  } catch(e) {
+    summary.finalized = false;
+    showToast('⚠️ 歷史儲存失敗：' + e.message, 'error');
+    return false;
+  }
+
   try { await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).remove(); } catch(e) {}
   try { await db.ref(groupMetaPath()).remove(); } catch(e) {}
-
   groupOrders = [];
+  updateGroupBadge();
+  return true;
+}
+
+document.getElementById('sendGroupBtn').addEventListener('click', () => {
+  const activeOrders = groupOrders.filter(o => o.items.length > 0);
+  if (activeOrders.length === 0) return;
+  const text = buildGroupText();
+
+  pendingGroupSummary = {
+    finalized: false,
+    text,
+    totalPrice: activeOrders.reduce((s, o) => s + o.total, 0),
+    people: activeOrders.map(o => o.name || '匿名'),
+    items: activeOrders.flatMap(o => o.items.map(({ _itemIdx, ...rest }) => ({
+      ...rest,
+      customerName: o.name || '匿名',
+    }))),
+  };
+
   closeGroupModal();
 
   // 顯示複製 modal
@@ -1395,7 +1428,8 @@ document.getElementById('doCopyBtn').addEventListener('click', async () => {
   const text = document.getElementById('copyText').value;
   try {
     await navigator.clipboard.writeText(text);
-    showToast('✅ 已複製！請貼到 LINE 群組');
+    const finalized = await finalizePendingGroupSummary();
+    if (finalized) showToast('✅ 已複製！請貼給店家');
   } catch(e) {
     // fallback：選取 textarea 讓使用者手動複製
     const ta = document.getElementById('copyText');

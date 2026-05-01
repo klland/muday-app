@@ -1197,6 +1197,13 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   min-width: 18px;
 }
 .history-drink-info { flex: 1; min-width: 0; }
+.history-customer {
+  font-family: var(--font-zh);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
 .history-drink-name {
   font-size: 13px;
   letter-spacing: 1px;

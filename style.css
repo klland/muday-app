@@ -1186,11 +1186,22 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 .history-person-group:last-child { border-bottom: none; }
 .history-person-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 12px 5px;
-  background: rgba(214, 198, 160, 0.14);
+  padding: 9px 12px 6px;
+  background: linear-gradient(90deg, rgba(168, 73, 56, 0.08), rgba(214, 198, 160, 0.16) 42%, rgba(214, 198, 160, 0.08));
+  border-bottom: 1px solid rgba(214, 198, 160, 0.45);
+}
+.history-person-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
 }
 .history-person-stamp {
   width: 22px;
@@ -1198,10 +1209,12 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: var(--accent);
+  color: var(--paper);
   border: 1px solid var(--accent);
-  color: var(--accent);
   font-size: 12px;
   line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(250, 244, 228, 0.28);
   flex-shrink: 0;
 }
 .history-person-name {

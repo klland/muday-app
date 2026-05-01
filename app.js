@@ -842,6 +842,22 @@ async function updateGroupBadge() {
   } catch(e) { /* ignore */ }
 }
 
+function updateGroupBadgeFromOrders(orders) {
+  const badge = document.getElementById('groupBadge');
+  if (!badge) return;
+
+  const cups = toArr(orders).reduce((s, o) => (
+    s + toArr(o.items).reduce((ss, i) => ss + (i.qty || 1), 0)
+  ), 0);
+
+  if (cups > 0) {
+    badge.textContent = cups;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 function updateStickyBar() {
   const stickyBar = document.getElementById('stickyBar');
   const n = cart.reduce((s, i) => s + i.qty, 0);
@@ -1431,6 +1447,7 @@ function renderGroupOrders() {
       }
 
       renderGroupOrders();
+      updateGroupBadgeFromOrders(groupOrders);
     });
   });
 }

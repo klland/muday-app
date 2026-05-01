@@ -1165,6 +1165,13 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   letter-spacing: 2px;
   color: var(--ink);
 }
+.history-person {
+  font-family: var(--font-zh);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
 .history-total {
   font-family: var(--font-en);
   font-size: 13px;

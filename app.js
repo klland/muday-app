@@ -296,6 +296,15 @@ function toArr(val) {
   if (!val) return [];
   return Array.isArray(val) ? val : Object.values(val);
 }
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[ch]));
+}
 async function loadTodayOrders() {
   const snap = await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).get();
   if (!snap.exists()) return [];
@@ -993,6 +1002,18 @@ function formatDate(ts) {
   return `${prefix} ${hm}`;
 }
 
+function historyPersonLabel(order) {
+  const people = toArr(order.people)
+    .map(name => String(name || '').trim())
+    .filter(Boolean);
+
+  if (people.length > 0) {
+    return `點餐人 ${people.length} 位 · ${people.join('、')}`;
+  }
+
+  return `點餐人 · ${String(order.name || '匿名').trim() || '匿名'}`;
+}
+
 historyBtn.addEventListener('click', async () => {
   historyModal.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1031,17 +1052,19 @@ historyBtn.addEventListener('click', async () => {
           <div class="history-drink">
             <span class="history-qty">×${i.qty}</span>
             <div class="history-drink-info">
-              <span class="history-drink-name">${i.name}</span>
-              ${opts ? `<div class="history-opts">${opts}</div>` : ''}
+              <span class="history-drink-name">${escapeHtml(i.name)}</span>
+              ${opts ? `<div class="history-opts">${escapeHtml(opts)}</div>` : ''}
             </div>
             <span class="history-drink-price">$${i.totalPrice}</span>
           </div>`;
       }).join('');
+      const personLabel = historyPersonLabel(order);
       div.innerHTML = `
         <div class="history-header">
           <div class="history-header-left">
             <span class="history-order-num">${orderNum}</span>
             <span class="history-date">${formatDate(order.timestamp)}</span>
+            <span class="history-person">${escapeHtml(personLabel)}</span>
           </div>
           <span class="history-total">NT$ ${order.total}</span>
         </div>

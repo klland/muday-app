@@ -183,7 +183,7 @@ const MENU = [
       { id: 206, name: '糯香檸檬茶',    emoji: '🍋🍶', price: 65, kcal: 390, caffeine: 2 },
       { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼🍋', price: 70, kcal: 360, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎🍋', price: 70, kcal: 350, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
-      { id: 209, name: '荔枝烏龍',      emoji: '🍒🫖', price: 60, kcal: 350, caffeine: 2 },
+      { id: 209, name: '荔枝烏龍',      emoji: '🍒🫖', price: 60, kcal: 350, caffeine: 2, inherentSweetKcal: 180 },
       { id: 210, name: '荔枝蘆薈',      emoji: '🍒', price: 65, kcal: 270, caffeine: 2, fixedSweetIce: true, builtInKcal: 100 },
       { id: 211, name: '檸檬紅茶',      emoji: '🍋🍂', price: 60, kcal: 390, caffeine: 3 },
       { id: 212, name: '檸檬高山青',    emoji: '🍋🏔️', price: 60, kcal: 390, caffeine: 2 },
@@ -232,12 +232,12 @@ const MENU = [
   {
     series: '堅持系列', category: '冬瓜茶', emoji_cat: '🍵', theme: 'teal', baseKcal: 0,
     items: [
-      { id: 601, name: '冬瓜紅茶',   emoji: '🍂', price: 50, kcal: 350, caffeine: 3 },
-      { id: 602, name: '冬瓜青茶',   emoji: '🏔️', price: 50, kcal: 350, caffeine: 2 },
-      { id: 603, name: '冬瓜檸檬',   emoji: '🍋', price: 55, kcal: 410, caffeine: 2 },
-      { id: 604, name: '冬瓜仙草蜜', emoji: '🍯', price: 55, kcal: 300, caffeine: 2, fixedIce: true },
-      { id: 605, name: '冬瓜蕎麥茶', emoji: '🌾', price: 50, kcal: 350, caffeine: 0, caffeineFree: true },
-      { id: 606, name: '冬瓜烏龍茶', emoji: '🫖', price: 50, kcal: 350, caffeine: 2 },
+      { id: 601, name: '冬瓜紅茶',   emoji: '🍂', price: 50, kcal: 350, caffeine: 3, inherentSweetKcal: 220 },
+      { id: 602, name: '冬瓜青茶',   emoji: '🏔️', price: 50, kcal: 350, caffeine: 2, inherentSweetKcal: 220 },
+      { id: 603, name: '冬瓜檸檬',   emoji: '🍋', price: 55, kcal: 410, caffeine: 2, inherentSweetKcal: 220 },
+      { id: 604, name: '冬瓜仙草蜜', emoji: '🍯', price: 55, kcal: 300, caffeine: 2, fixedIce: true, inherentSweetKcal: 220 },
+      { id: 605, name: '冬瓜蕎麥茶', emoji: '🌾', price: 50, kcal: 350, caffeine: 0, caffeineFree: true, inherentSweetKcal: 220 },
+      { id: 606, name: '冬瓜烏龍茶', emoji: '🫖', price: 50, kcal: 350, caffeine: 2, inherentSweetKcal: 220 },
     ]
   },
 ];
@@ -704,7 +704,10 @@ function calcEstKcal() {
   }
 
   const builtIn = item.builtInKcal || 0;
-  const drinkKcal = baseKcal + builtIn + (item.kcal - baseKcal - builtIn) * sugarRatio;
+  const inherentSweet = item.inherentSweetKcal || 0;
+  const fixedKcal = baseKcal + builtIn + inherentSweet;
+  const adjustableKcal = Math.max(item.kcal - fixedKcal, 0);
+  const drinkKcal = fixedKcal + adjustableKcal * sugarRatio;
 
   let toppingKcal = 0;
   if (selectedHalved && selectedToppings.length === 2) {

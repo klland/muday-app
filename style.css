@@ -1181,6 +1181,42 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 }
 
 .history-items { padding: 4px 0; }
+.history-person-group {
+  border-bottom: 1px solid var(--rule-soft);
+}
+.history-person-group:last-child { border-bottom: none; }
+.history-person-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px 5px;
+  background: rgba(214, 198, 160, 0.14);
+}
+.history-person-stamp {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.history-person-name {
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  color: var(--ink);
+}
+.history-person-summary {
+  margin-left: auto;
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
 .history-drink {
   display: flex; align-items: flex-start;
   padding: 6px 12px;
@@ -1197,13 +1233,6 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   min-width: 18px;
 }
 .history-drink-info { flex: 1; min-width: 0; }
-.history-customer {
-  font-family: var(--font-zh);
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: var(--accent);
-  margin-bottom: 2px;
-}
 .history-drink-name {
   font-size: 13px;
   letter-spacing: 1px;

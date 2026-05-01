@@ -1002,7 +1002,43 @@ function formatDate(ts) {
   return `${prefix} ${hm}`;
 }
 
-function historyPersonLabel(order) {
+function parseHistoryTextGroups(text) {
+  const groups = [];
+  let currentGroup = null;
+  let currentItem = null;
+
+  String(text || '').split('\n').forEach(rawLine => {
+    const line = rawLine.trim();
+    if (!line || line.includes('────') || line.startsWith('共 ')) return;
+
+    const personMatch = line.match(/^【(.+)】$/);
+    if (personMatch) {
+      currentGroup = { name: personMatch[1].trim() || '匿名', items: [] };
+      groups.push(currentGroup);
+      currentItem = null;
+      return;
+    }
+
+    const itemMatch = line.match(/^\d+\.\s+(.+?)\s+×\s*(\d+)\s+[$＄]\s*(\d+)/);
+    if (itemMatch && currentGroup) {
+      currentItem = {
+        name: itemMatch[1].trim(),
+        qty: Number(itemMatch[2]) || 1,
+        totalPrice: Number(itemMatch[3]) || 0,
+        opts: [],
+        toppings: [],
+      };
+      currentGroup.items.push(currentItem);
+      return;
+    }
+
+    if (currentItem) currentItem.opts = [line];
+  });
+
+  return groups.filter(group => group.items.length > 0);
+}
+
+function historyPeople(order) {
   const textPeople = String(order.text || '')
     .split('\n')
     .map(line => line.match(/^【(.+)】$/)?.[1])
@@ -1015,11 +1051,32 @@ function historyPersonLabel(order) {
     .filter(Boolean)
     .filter((name, idx, arr) => arr.indexOf(name) === idx);
 
-  if (people.length > 0) {
-    return `點餐人 ${people.length} 位 · ${people.join('、')}`;
+  if (people.length > 0) return people;
+
+  return [String(order.name || '匿名').trim() || '匿名'];
+}
+
+function historyGroups(order) {
+  const items = toArr(order.items);
+
+  if (items.some(item => item.customerName)) {
+    const groups = [];
+    items.forEach(item => {
+      const name = String(item.customerName || '匿名').trim() || '匿名';
+      let group = groups.find(g => g.name === name);
+      if (!group) {
+        group = { name, items: [] };
+        groups.push(group);
+      }
+      group.items.push(item);
+    });
+    return groups;
   }
 
-  return `點餐人 · ${String(order.name || '匿名').trim() || '匿名'}`;
+  const parsedGroups = parseHistoryTextGroups(order.text);
+  if (parsedGroups.length > 0) return parsedGroups;
+
+  return [{ name: String(order.name || '匿名').trim() || '匿名', items }];
 }
 
 historyBtn.addEventListener('click', async () => {
@@ -1054,20 +1111,35 @@ historyBtn.addEventListener('click', async () => {
       const div = document.createElement('div');
       div.className = 'history-item';
       const orderNum = `#M${String(241 - idx).padStart(3,'0')}`;
-      const itemsHtml = order.items.map(i => {
-        const opts = [...toArr(i.opts), ...(toArr(i.toppings).length ? [toArr(i.toppings).join('・')] : [])].join('・');
+      const groups = historyGroups(order);
+      const itemsHtml = groups.map(group => {
+        const groupTotal = group.items.reduce((sum, i) => sum + (Number(i.totalPrice) || 0), 0);
+        const groupCups = group.items.reduce((sum, i) => sum + (Number(i.qty) || 1), 0);
+        const drinksHtml = group.items.map(i => {
+          const opts = [...toArr(i.opts), ...(toArr(i.toppings).length ? [toArr(i.toppings).join('・')] : [])].join('・');
+          return `
+            <div class="history-drink">
+              <span class="history-qty">×${i.qty || 1}</span>
+              <div class="history-drink-info">
+                <span class="history-drink-name">${escapeHtml(i.name)}</span>
+                ${opts ? `<div class="history-opts">${escapeHtml(opts)}</div>` : ''}
+              </div>
+              <span class="history-drink-price">$${i.totalPrice || 0}</span>
+            </div>`;
+        }).join('');
+
         return `
-          <div class="history-drink">
-            <span class="history-qty">×${i.qty}</span>
-            <div class="history-drink-info">
-              ${i.customerName ? `<div class="history-customer">${escapeHtml(i.customerName)}</div>` : ''}
-              <span class="history-drink-name">${escapeHtml(i.name)}</span>
-              ${opts ? `<div class="history-opts">${escapeHtml(opts)}</div>` : ''}
+          <div class="history-person-group">
+            <div class="history-person-row">
+              <span class="history-person-stamp">${escapeHtml(group.name.charAt(0) || '?')}</span>
+              <span class="history-person-name">${escapeHtml(group.name)}</span>
+              <span class="history-person-summary">${groupCups} 杯 · NT$ ${groupTotal}</span>
             </div>
-            <span class="history-drink-price">$${i.totalPrice}</span>
+            ${drinksHtml}
           </div>`;
       }).join('');
-      const personLabel = historyPersonLabel(order);
+      const people = historyPeople(order);
+      const personLabel = `點餐人 ${people.length} 位`;
       div.innerHTML = `
         <div class="history-header">
           <div class="history-header-left">

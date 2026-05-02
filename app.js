@@ -766,9 +766,12 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
     opts.push('甜度/冰量固定');
   } else {
     opts.push(sugars[selectedSugar]);
-    if (!item.hotOnly && !item.fixedIce) opts.push(ICES[selectedIce]);
-    if (item.hotOnly) opts.push('熱飲');
-    if (item.fixedIce) opts.push('冰量固定');
+    if (selectedHot || item.hotOnly) {
+      opts.push('熱飲');
+    } else {
+      if (!item.fixedIce) opts.push(ICES[selectedIce]);
+      if (item.fixedIce) opts.push('冰量固定');
+    }
   }
   if (item.hasPeppercorn) opts.push(PEPPERCORN[selectedPeppercorn] + '麻');
   if (selectedAddAcid)    opts.push('加酸');
@@ -890,6 +893,9 @@ async function fetchHistory() {
 }
 
 async function renderCart() {
+  const countEl = document.getElementById('cartHeaderCount');
+  if (countEl) countEl.textContent = `· ${cart.reduce((s,i)=>s+i.qty,0)} items`;
+
   if (cart.length === 0) {
     cartBody.innerHTML = `
       <div class="cart-empty-block">
@@ -958,9 +964,6 @@ async function renderCart() {
       renderCart();
     });
   });
-  // update header item count
-  const countEl = document.getElementById('cartHeaderCount');
-  if (countEl) countEl.textContent = `· ${cart.reduce((s,i)=>s+i.qty,0)} items`;
   cartTotalEl.textContent = cart.reduce((s, i) => s + i.totalPrice, 0);
   cartFooter.style.display = 'block';
 }
@@ -1000,12 +1003,17 @@ checkoutBtn.addEventListener('click', async () => {
   const total = cart.reduce((s, i) => s + i.totalPrice, 0);
   const cartSnapshot = [...cart];
 
-  // 上傳到 Firebase 團購（歷史紀錄改在匯總送出時才存）
-  try { await submitToFirebase(name, cartSnapshot, total); } catch(e) { console.warn('Firebase:', e); }
+  try {
+    await submitToFirebase(name, cartSnapshot, total);
+  } catch(e) {
+    console.warn('Firebase:', e);
+    showToast('訂單送出失敗，請檢查網路後再試', 'error');
+    return;
+  }
 
   document.getElementById('successName').textContent = `${name} 的訂單`;
   document.getElementById('successItems').innerHTML = cartSnapshot
-    .map(i => `<div class="success-item"><span>${i.name} × ${i.qty}</span><span>$${i.totalPrice}</span></div>`)
+    .map(i => `<div class="success-item"><span>${escapeHtml(i.name)} × ${i.qty}</span><span>$${i.totalPrice}</span></div>`)
     .join('');
 
   cart = [];
@@ -1387,9 +1395,9 @@ function renderGroupOrders() {
     const orderTotal = order.items.reduce((s, i) => s + i.totalPrice, 0);
     html += `<div class="group-person">
       <div class="group-person-header">
-        <div class="group-person-stamp">${firstChar}</div>
+        <div class="group-person-stamp">${escapeHtml(firstChar)}</div>
         <div class="group-person-meta">
-          <span class="group-person-name">${name}</span>
+          <span class="group-person-name">${escapeHtml(name)}</span>
           <span class="group-person-cups">${orderCups} cups</span>
         </div>
         <span class="group-person-subtotal">NT$ ${orderTotal}</span>
@@ -1404,8 +1412,8 @@ function renderGroupOrders() {
             <span class="group-item-qty-badge">×${item.qty}</span>
           </div>
           <div class="group-item-info">
-            <div class="group-item-name">${item.name}</div>
-            <div class="group-item-opts">${detail}</div>
+            <div class="group-item-name">${escapeHtml(item.name)}</div>
+            <div class="group-item-opts">${escapeHtml(detail)}</div>
           </div>
           <span class="group-item-price">$${item.totalPrice}</span>
           <button class="group-del-btn" data-fbkey="${order._fbKey}" data-idx="${item._itemIdx}">✕</button>
@@ -1423,27 +1431,27 @@ function renderGroupOrders() {
       const fbKey   = btn.dataset.fbkey;
       const itemIdx = Number(btn.dataset.idx);
 
-      // 找到對應的 order 並移除該品項
+      // 找到對應的 order，等 Firebase 成功後再更新本地畫面
       const order = groupOrders.find(o => o._fbKey === fbKey);
       if (!order) return;
 
-      order.items = order.items.filter(i => i._itemIdx !== itemIdx);
+      const nextItems = order.items.filter(i => i._itemIdx !== itemIdx);
 
-      // 更新 Firebase
       try {
-        if (order.items.length === 0) {
-          // 整筆訂單刪除
+        if (nextItems.length === 0) {
           await db.ref(`orders/${GROUP_ID}/${getTodayKey()}/${fbKey}`).remove();
           groupOrders = groupOrders.filter(o => o._fbKey !== fbKey);
         } else {
-          // 更新剩餘品項
-          const cleanItems = order.items.map(({ _itemIdx, ...rest }) => rest);
-          const newTotal   = order.items.reduce((s, i) => s + i.totalPrice, 0);
+          const cleanItems = nextItems.map(({ _itemIdx, ...rest }) => rest);
+          const newTotal   = nextItems.reduce((s, i) => s + i.totalPrice, 0);
           await db.ref(`orders/${GROUP_ID}/${getTodayKey()}/${fbKey}`).update({ items: cleanItems, total: newTotal });
+          order.items = nextItems;
           order.total = newTotal;
         }
       } catch(e) {
         console.warn('刪除失敗:', e);
+        showToast('刪除失敗，請稍後再試', 'error');
+        return;
       }
 
       renderGroupOrders();
@@ -1507,11 +1515,20 @@ async function finalizePendingGroupSummary() {
   try { await db.ref(`orders/${GROUP_ID}/${getTodayKey()}`).remove(); } catch(e) {}
   try { await db.ref(groupMetaPath()).remove(); } catch(e) {}
   groupOrders = [];
+  pendingGroupSummary = null;
   updateGroupBadge();
   return true;
 }
 
-document.getElementById('sendGroupBtn').addEventListener('click', () => {
+document.getElementById('sendGroupBtn').addEventListener('click', async () => {
+  try {
+    groupOrders = await loadTodayOrders();
+    renderGroupOrders();
+  } catch(e) {
+    showToast('眾人茶單重新整理失敗，請再試一次', 'error');
+    return;
+  }
+
   const activeOrders = groupOrders.filter(o => o.items.length > 0);
   if (activeOrders.length === 0) return;
   const text = buildGroupText();
@@ -1531,6 +1548,7 @@ document.getElementById('sendGroupBtn').addEventListener('click', () => {
 
   // 顯示複製 modal
   document.getElementById('copyText').value = text;
+  document.getElementById('manualFinalizeBtn').style.display = 'none';
   document.getElementById('copyModal').classList.add('open');
 });
 
@@ -1550,7 +1568,16 @@ document.getElementById('doCopyBtn').addEventListener('click', async () => {
     // fallback：選取 textarea 讓使用者手動複製
     const ta = document.getElementById('copyText');
     ta.select(); ta.setSelectionRange(0, text.length);
-    showToast('請長按選取後複製', 'error');
+    document.getElementById('manualFinalizeBtn').style.display = 'block';
+    showToast('請手動複製後按「完成茶單」', 'error');
+  }
+});
+
+document.getElementById('manualFinalizeBtn').addEventListener('click', async () => {
+  const finalized = await finalizePendingGroupSummary();
+  if (finalized) {
+    document.getElementById('manualFinalizeBtn').style.display = 'none';
+    showToast('✅ 已完成茶單，請貼給店家');
   }
 });
 

@@ -53,6 +53,8 @@ const DRINK_COLORS = {
   211: { liquid: '#c28050', top: '#96602e' }, // 檸檬紅茶 — 紅橙
   212: { liquid: '#d0c898', top: '#a8a070' }, // 檸檬高山青 — 淡黃綠
   213: { liquid: '#d8c890', top: '#b0a060' }, // 桂花蕎麥茶 — 桂花金
+  214: { liquid: '#d89078', top: '#b46550' }, // 牡丹紅柚 — 柚紅
+  215: { liquid: '#e0a080', top: '#c47458' }, // 粉粿牡丹紅柚 — 粉粿柚紅
 
   // 奶茶 Milk Tea
   301: { liquid: '#c8a678', top: '#a07f50' }, // 烏龍綠奶茶
@@ -140,7 +142,8 @@ const DRINK_EN = {
   207: 'Osmanthus Lemon',      208: 'Brown Sugar Lemon',
   209: 'Lychee Oolong',        210: 'Lychee Aloe',
   211: 'Lemon Black Tea',      212: 'Lemon High Mountain',
-  213: 'Osmanthus Buckwheat',
+  213: 'Osmanthus Buckwheat',  214: 'Peony Red Pomelo',
+  215: 'Tapioca Peony Pomelo',
   301: 'Oolong Green Milk',    302: 'Glutinous Milk Tea',
   303: 'Brown Sugar Milk',     304: 'Buckwheat Milk Tea',
   305: 'Taiwan Milk Tea',      306: 'Black Sesame Milk',
@@ -164,44 +167,46 @@ const MENU = [
   {
     series: '茶人系列', category: '原味茶', emoji_cat: '🌿', theme: 'green', baseKcal: 0,
     items: [
-      { id: 101, name: '輕香烏龍綠',  emoji: '🌿', price: 45, kcal: 200, caffeine: 2 },
-      { id: 102, name: '糯米香茶',    emoji: '🍶', price: 45, kcal: 200, caffeine: 2 },
-      { id: 103, name: '島韻紅茶',    emoji: '🍂', price: 40, kcal: 200, caffeine: 3 },
+      { id: 101, name: '輕香烏龍綠',  emoji: '🌿', price: 45, kcal: 200, caffeine: 2, canHot: true },
+      { id: 102, name: '糯米香茶',    emoji: '🍶', price: 45, kcal: 200, caffeine: 2, canHot: true },
+      { id: 103, name: '島韻紅茶',    emoji: '🍂', price: 40, kcal: 200, caffeine: 3, canHot: true },
       { id: 104, name: '炭培烏龍',    emoji: '🫖', price: 40, kcal: 200, caffeine: 2 },
-      { id: 105, name: '油切蕎麥茶',  emoji: '🌾', price: 40, kcal: 10, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true, popular: true },
-      { id: 106, name: '手採高山青',  emoji: '🏔️', price: 40, kcal: 200, caffeine: 2 },
+      { id: 105, name: '油切蕎麥茶',  emoji: '🌾', price: 40, kcal: 10, caffeine: 1, traceCaffeine: true, canCustomNoCaff: true, popular: true, canHot: true },
+      { id: 106, name: '手採高山青',  emoji: '🏔️', price: 40, kcal: 200, caffeine: 2, canHot: true },
     ]
   },
   {
     series: '講究系列', category: '風味茶', emoji_cat: '🌸', theme: 'pink', baseKcal: 0,
     items: [
+      { id: 214, name: '牡丹紅柚',      emoji: '🌸🍊', price: 70, kcal: 300, caffeine: 2, fixedSugar: true },
+      { id: 215, name: '粉粿牡丹紅柚',  emoji: '🌸🍊', price: 85, kcal: 460, caffeine: 2, fixedSugar: true, builtInKcal: 160 },
       { id: 201, name: '牡丹高山青',    emoji: '🌸🏔️', price: 60, kcal: 150, caffeine: 2, limitedSugar: true },
-      { id: 202, name: '牡丹蕎麥茶',    emoji: '🌸🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true },
+      { id: 202, name: '牡丹蕎麥茶',    emoji: '🌸🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true, canHot: true },
       { id: 203, name: '粉粿牡丹檸檬',  emoji: '🌸🍋', price: 70, kcal: 470, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 204, name: '酸梅湯烏龍綠',  emoji: '🍑🌿', price: 65, kcal: 170, caffeine: 2, fixedSweetIce: true },
       { id: 205, name: '輕檸烏龍綠',    emoji: '🍋🌿', price: 65, kcal: 200, caffeine: 2 },
-      { id: 206, name: '糯香檸檬茶',    emoji: '🍋🍶', price: 65, kcal: 390, caffeine: 2 },
+      { id: 206, name: '糯香檸檬茶',    emoji: '🍋🍶', price: 65, kcal: 390, caffeine: 2, canHot: true },
       { id: 207, name: '粉粿桂花檸檬',  emoji: '🌼🍋', price: 70, kcal: 360, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 208, name: '粉粿黑糖檸檬',  emoji: '🤎🍋', price: 70, kcal: 350, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
       { id: 209, name: '荔枝烏龍',      emoji: '🍒🫖', price: 60, kcal: 350, caffeine: 2, inherentSweetKcal: 180 },
       { id: 210, name: '荔枝蘆薈',      emoji: '🍒', price: 65, kcal: 270, caffeine: 2, fixedSweetIce: true, builtInKcal: 100 },
-      { id: 211, name: '檸檬紅茶',      emoji: '🍋🍂', price: 60, kcal: 390, caffeine: 3 },
-      { id: 212, name: '檸檬高山青',    emoji: '🍋🏔️', price: 60, kcal: 390, caffeine: 2 },
-      { id: 213, name: '桂花蕎麥茶',    emoji: '🌼🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true },
+      { id: 211, name: '檸檬紅茶',      emoji: '🍋🍂', price: 60, kcal: 390, caffeine: 3, canHot: true },
+      { id: 212, name: '檸檬高山青',    emoji: '🍋🏔️', price: 60, kcal: 390, caffeine: 2, canHot: true },
+      { id: 213, name: '桂花蕎麥茶',    emoji: '🌼🌾', price: 60, kcal: 130, caffeine: 0, limitedSugar: true, caffeineFree: true, canHot: true },
     ]
   },
   {
     series: '香醇系列', category: '奶茶', emoji_cat: '🧋', theme: 'brown', baseKcal: 200,
     items: [
-      { id: 301, name: '烏龍綠奶茶',   emoji: '🌿', price: 60, kcal: 500, caffeine: 2 },
-      { id: 302, name: '糯香奶茶',     emoji: '🍶', price: 60, kcal: 440, caffeine: 2 },
+      { id: 301, name: '烏龍綠奶茶',   emoji: '🌿', price: 60, kcal: 500, caffeine: 2, canHot: true },
+      { id: 302, name: '糯香奶茶',     emoji: '🍶', price: 60, kcal: 440, caffeine: 2, canHot: true },
       { id: 303, name: '粉粿黑糖奶茶', emoji: '🤎', price: 70, kcal: 450, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
-      { id: 304, name: '黃金蕎麥奶茶', emoji: '🌾', price: 55, kcal: 500, caffeine: 0, caffeineFree: true },
-      { id: 305, name: '逮丸奶茶',     emoji: '🟢', price: 75, kcal: 630, caffeine: 2, includesGrass: true, builtInKcal: 90 },
-      { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70, kcal: 550, caffeine: 2 },
-      { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 500, caffeine: 3 },
-      { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 490, caffeine: 2 },
-      { id: 309, name: '高山青奶茶',   emoji: '🏔️', price: 55, kcal: 500, caffeine: 2 },
+      { id: 304, name: '黃金蕎麥奶茶', emoji: '🌾', price: 55, kcal: 500, caffeine: 0, caffeineFree: true, canHot: true },
+      { id: 305, name: '逮丸奶茶',     emoji: '🟢', price: 75, kcal: 630, caffeine: 2, includesGrass: true, builtInKcal: 90, canHot: true },
+      { id: 306, name: '極黑芝麻奶茶', emoji: '⚫', price: 70, kcal: 550, caffeine: 2, canHot: true },
+      { id: 307, name: '島韻紅奶茶',   emoji: '🍂', price: 55, kcal: 500, caffeine: 3, canHot: true },
+      { id: 308, name: '烏龍奶茶',     emoji: '🫖', price: 55, kcal: 490, caffeine: 2, canHot: true },
+      { id: 309, name: '高山青奶茶',   emoji: '🏔️', price: 55, kcal: 500, caffeine: 2, canHot: true },
       { id: 311, name: '嫩仙草奶茶',   emoji: '🌿', price: 65, kcal: 360, caffeine: 2, builtInKcal: 90 },
     ]
   },
@@ -219,14 +224,14 @@ const MENU = [
   {
     series: '自然系列', category: '鮮奶茶', emoji_cat: '🥛', theme: 'blue', baseKcal: 100,
     items: [
-      { id: 501, name: '烏龍綠鮮奶茶',   emoji: '🌿', price: 80, kcal: 320, caffeine: 2 },
-      { id: 502, name: '糯香鮮奶茶',     emoji: '🍶', price: 80, kcal: 300, caffeine: 2 },
-      { id: 503, name: '蕎麥鮮奶茶',     emoji: '🌾', price: 75, kcal: 320, caffeine: 0, caffeineFree: true },
-      { id: 504, name: '烏龍鮮奶茶',     emoji: '🫖', price: 75, kcal: 290, caffeine: 2 },
-      { id: 505, name: '島韻紅鮮奶茶',   emoji: '🍂', price: 75, kcal: 320, caffeine: 3 },
-      { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85, kcal: 500, caffeine: 2 },
+      { id: 501, name: '烏龍綠鮮奶茶',   emoji: '🌿', price: 80, kcal: 320, caffeine: 2, canHot: true },
+      { id: 502, name: '糯香鮮奶茶',     emoji: '🍶', price: 80, kcal: 300, caffeine: 2, canHot: true },
+      { id: 503, name: '蕎麥鮮奶茶',     emoji: '🌾', price: 75, kcal: 320, caffeine: 0, caffeineFree: true, canHot: true },
+      { id: 504, name: '烏龍鮮奶茶',     emoji: '🫖', price: 75, kcal: 290, caffeine: 2, canHot: true },
+      { id: 505, name: '島韻紅鮮奶茶',   emoji: '🍂', price: 75, kcal: 320, caffeine: 3, canHot: true },
+      { id: 506, name: '極黑芝麻鮮奶茶', emoji: '⚫', price: 85, kcal: 500, caffeine: 2, canHot: true },
       { id: 508, name: '粉粿黑糖鮮奶茶', emoji: '🤎', price: 85, kcal: 480, caffeine: 1, limitedSugar: true, traceCaffeine: true, builtInKcal: 160 },
-      { id: 509, name: '高山青鮮奶茶',   emoji: '🏔️', price: 75, kcal: 330, caffeine: 2 },
+      { id: 509, name: '高山青鮮奶茶',   emoji: '🏔️', price: 75, kcal: 330, caffeine: 2, canHot: true },
     ]
   },
   {
@@ -494,12 +499,7 @@ function itemCanThickenTea() {
   return true;
 }
 function itemCanHot(item) {
-  const cat = MENU.find(c => c.items.some(i => i.id === item.id));
-  if (!cat) return false;
-  if (cat.category === '風味茶') return false;
-  if (item.name.includes('粉粿')) return false;
-  if (item.name.includes('檸')) return false;
-  return true;
+  return item.canHot === true;
 }
 
 // ===== Modal 客製化 =====
@@ -539,13 +539,17 @@ function openModal(item) {
   grassNote.style.display = item.includesGrass ? 'block' : 'none';
 
   if (item.fixedSweetIce) {
+    fixedNote.textContent = '此飲品甜度與冰量固定，不可調整';
     fixedNote.style.display  = 'block';
     sugarGroup.style.display = 'none';
     iceGroup.style.display   = 'none';
   } else {
-    fixedNote.style.display  = 'none';
-    sugarGroup.style.display = 'block';
-    renderChips('sugarOptions', item.limitedSugar ? SUGARS_LIMITED : SUGARS_FULL, 0, 'sugar');
+    fixedNote.textContent = '此飲品甜度固定，不可調整';
+    fixedNote.style.display  = item.fixedSugar ? 'block' : 'none';
+    sugarGroup.style.display = item.fixedSugar ? 'none' : 'block';
+    if (!item.fixedSugar) {
+      renderChips('sugarOptions', item.limitedSugar ? SUGARS_LIMITED : SUGARS_FULL, 0, 'sugar');
+    }
     if (item.hotOnly || item.fixedIce) {
       iceGroup.style.display = 'none';
     } else {
@@ -711,7 +715,7 @@ function calcEstKcal() {
   const baseKcal = getItemBaseKcal(item);
 
   let sugarRatio = 1.0;
-  if (!item.fixedSweetIce) {
+  if (!item.fixedSweetIce && !item.fixedSugar) {
     const ratios = item.limitedSugar ? SUGAR_RATIOS_LIMITED : SUGAR_RATIOS;
     sugarRatio = ratios[selectedSugar] ?? 1.0;
   }
@@ -762,7 +766,7 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   if (item.fixedSweetIce) {
     opts.push('甜度/冰量固定');
   } else {
-    opts.push(sugars[selectedSugar]);
+    opts.push(item.fixedSugar ? '甜度固定' : sugars[selectedSugar]);
     if (selectedHot || item.hotOnly) {
       opts.push('熱飲');
     } else {

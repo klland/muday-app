@@ -160,11 +160,20 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
   letter-spacing: 0;
 }
 .cart-badge.bounce { animation: stamp 0.45s ease; }
+.cart-btn.cart-pulse,
+#stickyBar.cart-pulse {
+  animation: cartPulse 0.85s ease;
+}
 @keyframes stamp {
   0%   { transform: scale(1) rotate(0); }
   40%  { transform: scale(1.35) rotate(-6deg); }
   70%  { transform: scale(0.95) rotate(3deg); }
   100% { transform: scale(1) rotate(0); }
+}
+@keyframes cartPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(168, 73, 56, 0.45); }
+  45%  { box-shadow: 0 0 0 10px rgba(168, 73, 56, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(168, 73, 56, 0); }
 }
 
 /* ========================================================================
@@ -1566,6 +1575,138 @@ input::placeholder { color: var(--dim); font-family: var(--font-zh); letter-spac
 .toast-success { border-left: 3px solid var(--line-green); }
 .toast-error   { border-left: 3px solid var(--accent); color: var(--paper); background: var(--accent-dk); }
 .toast-info    { border-left: 3px solid var(--accent); }
+
+/* compact add-to-cart confirmation */
+.cart-feedback {
+  position: fixed;
+  left: 50%;
+  bottom: 72px;
+  width: min(92vw, 390px);
+  transform: translate(-50%, 16px) scale(0.96);
+  opacity: 0;
+  z-index: 310;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(250, 244, 228, 0.96);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  box-shadow: 0 14px 34px rgba(45, 36, 24, 0.24);
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.cart-feedback.show {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  animation: cartFeedbackIn 0.48s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cart-feedback.hide {
+  opacity: 0;
+  transform: translate(-50%, 8px) scale(0.98);
+  transition: opacity 0.25s, transform 0.25s;
+}
+.cart-feedback::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(168, 73, 56, 0.22);
+  pointer-events: none;
+}
+.cart-feedback-cup {
+  width: 52px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.cart-feedback-cup svg {
+  width: 46px;
+  height: 58px;
+  animation: cartCupDrop 0.46s ease both;
+}
+.cart-feedback-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cart-feedback-stamp {
+  width: fit-content;
+  padding: 2px 7px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  font-size: 10px;
+  letter-spacing: 2px;
+  transform: rotate(-4deg);
+  animation: cartStamp 0.34s ease 0.12s both;
+}
+.cart-feedback-name {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-feedback-detail {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-feedback-next {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding-left: 8px;
+  border-left: 1px dashed var(--rule);
+  color: var(--accent);
+  white-space: nowrap;
+}
+.cart-feedback-next span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--dim);
+}
+.cart-feedback-next strong {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+@keyframes cartFeedbackIn {
+  0%   { opacity: 0; transform: translate(-50%, 18px) scale(0.94); }
+  60%  { opacity: 1; transform: translate(-50%, -3px) scale(1.02); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+@keyframes cartCupDrop {
+  0%   { transform: translateY(-8px) scale(0.92); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes cartStamp {
+  0%   { transform: rotate(-8deg) scale(1.4); opacity: 0; }
+  100% { transform: rotate(-4deg) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-feedback,
+  .cart-feedback.show,
+  .cart-feedback.hide,
+  .cart-feedback-cup svg,
+  .cart-feedback-stamp,
+  .cart-btn.cart-pulse,
+  #stickyBar.cart-pulse {
+    animation: none;
+    transition: none;
+  }
+}
 
 /* ========================================================================
    Responsive tweaks

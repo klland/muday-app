@@ -341,6 +341,57 @@ function showToast(msg, type = 'success') {
   }, 2800);
 }
 
+function showAddToCartFeedback(item, opts, toppings, itemQty) {
+  document.querySelectorAll('.cart-feedback').forEach(el => el.remove());
+
+  const cat = MENU.find(c => c.items.some(i => i.id === item.id));
+  const theme = (cat && cat.theme) || 'brown';
+  const detail = [...opts, ...(toppings.length ? ['加料'] : [])]
+    .filter(Boolean)
+    .filter((value, idx, arr) => arr.indexOf(value) === idx)
+    .slice(0, 2)
+    .join('・');
+
+  const feedback = document.createElement('button');
+  feedback.type = 'button';
+  feedback.className = 'cart-feedback';
+  feedback.setAttribute('aria-label', `已加入 ${item.name}，查看茶籃`);
+  feedback.innerHTML = `
+    <span class="cart-feedback-cup">${cupSvg(theme, item.id)}</span>
+    <span class="cart-feedback-main">
+      <span class="cart-feedback-stamp">已入籃</span>
+      <span class="cart-feedback-name">${escapeHtml(item.name)}${itemQty > 1 ? ` × ${itemQty}` : ''}</span>
+      ${detail ? `<span class="cart-feedback-detail">${escapeHtml(detail)}</span>` : ''}
+    </span>
+    <span class="cart-feedback-next">
+      <span>下一步</span>
+      <strong>查看茶籃</strong>
+    </span>`;
+
+  feedback.addEventListener('click', () => {
+    feedback.remove();
+    openCart();
+  });
+
+  document.body.appendChild(feedback);
+  requestAnimationFrame(() => feedback.classList.add('show'));
+
+  cartBtn.classList.add('cart-pulse');
+  const stickyBar = document.getElementById('stickyBar');
+  if (stickyBar) stickyBar.classList.add('cart-pulse');
+
+  setTimeout(() => {
+    cartBtn.classList.remove('cart-pulse');
+    if (stickyBar) stickyBar.classList.remove('cart-pulse');
+  }, 900);
+
+  setTimeout(() => {
+    feedback.classList.remove('show');
+    feedback.classList.add('hide');
+    setTimeout(() => feedback.remove(), 300);
+  }, 3200);
+}
+
 // ===== State =====
 let cart = JSON.parse(localStorage.getItem(LS_CART) || '[]');
 let currentItem = null;
@@ -778,7 +829,6 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   if (selectedAddAcid)    opts.push('加酸');
   if (selectedThickenTea) opts.push('茶加厚');
   if (selectedNoCaff)     opts.push('無咖啡因');
-  if (selectedHot)        opts.push('熱飲');
 
   const toppingExtra = calcToppingExtra();
   const toppingLabels = selectedToppings.map(i => TOPPINGS[i].label);
@@ -799,6 +849,7 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   saveCart();
   updateCartBadge();
   closeCustomModal();
+  showAddToCartFeedback(item, opts, toppingLabels, qty);
   cartBtn.style.transform = 'scale(1.18)';
   setTimeout(() => { cartBtn.style.transform = ''; }, 200);
 });

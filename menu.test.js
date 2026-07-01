@@ -78,3 +78,20 @@ test('red pomelo drinks use the supplied fixed-sugar restriction', () => {
   assert.equal(redPomeloDrinks.length, 2);
   assert.ok(redPomeloDrinks.every(item => item.fixedSugar));
 });
+
+test('adding to cart triggers a compact visual confirmation with a cart next step', () => {
+  const source = fs.readFileSync('app.js', 'utf8');
+  const styles = fs.readFileSync('style.css', 'utf8');
+
+  assert.match(source, /function showAddToCartFeedback\(/);
+  assert.match(source, /showAddToCartFeedback\(item,\s*opts,\s*toppingLabels,\s*qty\)/);
+  assert.match(source, /openCart\(\)/);
+  assert.match(source, /下一步/);
+  assert.match(source, /查看茶籃/);
+
+  assert.match(styles, /\.cart-feedback/);
+  assert.match(styles, /@keyframes cartFeedbackIn/);
+  assert.match(styles, /@keyframes cartPulse/);
+  assert.match(styles, /\.cart-btn\.cart-pulse/);
+  assert.match(styles, /prefers-reduced-motion/);
+});

@@ -112,7 +112,7 @@ function cupSvg(theme, id) {
   const top    = c ? c.top    : (THEME_TOP[theme]    || '#6e4a28');
   const stroke = '#2d2418';
   const accentLayer = theme === 'gold'
-    ? `<path d="M11.2 22 L48.8 22 L48.2 29 Q30 27 11.8 29 Z" fill="${top}" opacity="0.95"/>`
+    ? `<path d="M11 20 L49 20 L48.4 28 L11.6 28 Z" fill="${top}" opacity="0.95"/>`
     : `<path d="M14 50 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L46 50 Z" fill="${top}" opacity="0.7"/>`;
   return `<svg width="56" height="70" viewBox="0 0 60 75" style="display:block">
     <path d="M11 20 L14 60 Q14 66 20 66 L40 66 Q46 66 46 60 L49 20 Z" fill="${liquid}" opacity="0.85"/>
